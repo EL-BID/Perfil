@@ -406,11 +406,17 @@ for (i in (1:(bairros@data[1,] |> length()))) {
   bairros@data[bairros@data[,i]|> is.infinite(),i] <- NA
 }
 
-
 # Grava na pasta de visualização
 indicadores <- indicadores |> as.data.frame()
 names(indicadores) <- c("rotulo","nome","tipo","agregado")
 
+# domicilios <- domicilios[,"Inadimplentes"]
+
+
+saveRDS(imoveis,
+        file = "visualizacao/dados/imoveis.RDS")
+saveRDS(imoveis_residenciais,
+        file = "visualizacao/dados/imoveis_residenciais.RDS")
 saveRDS(indicadores,
         file = "visualizacao/dados/indicadores.RDS")
 saveRDS(domicilios,

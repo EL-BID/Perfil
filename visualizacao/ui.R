@@ -32,7 +32,7 @@ ui <- navbarPage(
             top: calc(50vh - 5px);
             left: calc(50vw - 8px);
           "
-        ) 
+        )
       )
     )
   ),
@@ -205,13 +205,16 @@ ui <- navbarPage(
   ),
 
   tabPanel(
-    "Análise 1"
+    "Análise 1",
+    # includeHTML(rmarkdown::render("analise1.Rmd"))
+    # includeMarkdown(knit("analise1.Rmd")) |> div(style = "margin:20px")
+    includeMarkdown("analise1.md") |> div(style = "margin:20px")
     
   ),
   
   tabPanel(
-    "Análise 2"
-    
+    "Análise 2",
+    # includeMarkdown("analise2.Rmd") |> div(style = "margin:20px")
   )
 )
 

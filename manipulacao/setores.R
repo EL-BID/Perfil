@@ -3,6 +3,7 @@
 library(cartography)
 library(osmdata)
 library(raster)
+library(sf)
 
 setores <- readRDS("coleta/dados/setores.RDS")
 bairros <- readRDS("coleta/dados/bairros.RDS")

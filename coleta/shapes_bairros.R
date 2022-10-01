@@ -1,6 +1,7 @@
 library(rgdal)
 
 # carrega as malhas dos bairros
+# buscar do site Geoweb Vitória
 bairros <- readOGR("dados/BairroPopulacaoCenso2010.kml")
 
 bairros$populacao <- 

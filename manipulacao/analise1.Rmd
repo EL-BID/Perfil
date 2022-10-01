@@ -1,0 +1,34 @@
+---
+title: "Análise 1"
+output: html_document
+date: "2022-09-29"
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(include = FALSE)
+library(DescTools) #para gini
+
+imoveis <- readRDS("imoveis.RDS")
+imoveis_residenciais <- readRDS("imoveis_residenciais.RDS")
+indicadores <- readRDS("indicadores.RDS")
+domicilios <- readRDS("domicilios.RDS")
+bairros <- readRDS("bairros.RDS")
+setores <- readRDS("setores.RDS")
+```
+
+# A regressividade do IPTU em Vitória e o impacto na inadimplência
+
+O total da dívida ativa do IPTU da Prefeitura de Vitória é atualmente de R\$ `r {imoveis@data$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)}`, sendo R\$ `r {imoveis_residenciais@data$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)}` referente a imóveis residenciais. 
+
+## Seleção dos dados
+
+Alguns critérios foram aplicados para a seleção dos imóveis incluídos na presente análise:
+
+-   Apenas imóveis residenciais;
+
+-   Eliminação dos 5 maiores devedores
+
+-   Sem imóveis georreferenciados
+
+
