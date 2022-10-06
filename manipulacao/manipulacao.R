@@ -1,5 +1,7 @@
 # trata as informações coletadas
 
+dir.create("manipulacao/dados", showWarnings = FALSE)
+
 # Cruza os georreferenciamento dos imóveis
 source("manipulacao/imoveis.R")
 

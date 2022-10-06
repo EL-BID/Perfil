@@ -34,7 +34,7 @@ saveRDS(imoveis_geo_interno, file =
 # consulta as longitudes e latidudes dos endereços a partir do OpenStreetMap
 imoveis_geo <- readRDS("coleta/dados/imoveis.RDS")
 
-# consulta apenas os imóveis que já não possuem informações internas
+# consulta apenas os imóveis para os quais não há informações internas
 imoveis_geo <- 
   imoveis_geo[
     which(!(imoveis_geo$inscricaoCadastral %in% 
