@@ -3,6 +3,7 @@ ui <- navbarPage(
   collapsible = TRUE,
   windowTitle = "PMV - Perfil da Dívida Ativa (IPTU)",
   title = "Perfil",
+  selected = "Análise 1",
   
   header = tagList(
     # Painel "carregando.." (para ocultar conteúdo enquanto carrega)
@@ -53,8 +54,8 @@ ui <- navbarPage(
       width = 400,
       draggable = TRUE,
       style = "z-index: 5000;
-      font-size: 14px; 
-      padding: 15px 10px 0px 10px; 
+      font-size: 14px;
+      padding: 15px 10px 0px 10px;
       background-color: rgba(0,0,0,0.1);",
       selectInput(
         "Indicadores",
@@ -63,7 +64,7 @@ ui <- navbarPage(
         choices = indicadores
       )
     ),
-    
+
     # Tabela de dados
     conditionalPanel(
       "output.mostrar_tabela != -1",
@@ -117,7 +118,7 @@ ui <- navbarPage(
         )
       )
     ),
-    
+
     # Botões de ferramentas (clique do mouse)
     conditionalPanel(
       "output.ferramenta == 'select'",
@@ -139,7 +140,7 @@ ui <- navbarPage(
         icon("check")
       )
     ),
-    
+
     conditionalPanel(
       "output.ferramenta == 'multi_select'",
       absolutePanel(
@@ -160,7 +161,7 @@ ui <- navbarPage(
         icon("check-double")
       )
     ),
-    
+
     conditionalPanel(
       "output.ferramenta == 'deselect'",
       absolutePanel(
@@ -178,10 +179,10 @@ ui <- navbarPage(
       actionLink(
         "deselect",
         label = NULL,
-        icon("trash")
+        icon("eye-slash")
       )
     ),
-  
+
     conditionalPanel(
       "output.mostrar_tabela == 1",
       absolutePanel(
@@ -199,7 +200,7 @@ ui <- navbarPage(
       actionLink(
         "btn_tabela",
         label = NULL,
-        icon("table")
+        icon("magnifying-glass-location")
       )
     )
   ),

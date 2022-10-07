@@ -9,27 +9,9 @@ runtime: shiny
 knitr::opts_chunk$set(include = FALSE)
 library(DescTools) #para gini
 
-imoveis <- readRDS("dados/imoveis.RDS")
-imoveis_residenciais <- readRDS("dados/imoveis_residenciais.RDS")
-indicadores <- readRDS("dados/indicadores.RDS")
-domicilios <- readRDS("dados/domicilios.RDS")
-bairros <- readRDS("dados/bairros.RDS")
-setores <- readRDS("dados/setores.RDS")
 ```
 
-# A regressividade do IPTU em Vitória e o impacto na inadimplência
 
-O total da dívida ativa do IPTU da Prefeitura de Vitória é atualmente de R\$ `r {imoveis@data$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)}`, sendo R\$ `r {imoveis_residenciais@data$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)}` referente a imóveis residenciais. 
-
-## Seleção dos dados
-
-Alguns critérios foram aplicados para a seleção dos imóveis incluídos na presente análise:
-
--   Apenas imóveis residenciais;
-
--   Eliminação dos 5 maiores devedores
-
--   Sem imóveis georreferenciados
 
 This R Markdown document is made interactive using Shiny. Unlike the more traditional workflow of creating static reports, you can now create documents that allow your readers to change the assumptions underlying your analysis and see the results immediately.
 

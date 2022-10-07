@@ -1,4 +1,5 @@
 # trata as informações coletadas
+library(knitr)
 
 dir.create("manipulacao/dados", showWarnings = FALSE)
 
@@ -12,4 +13,5 @@ source("manipulacao/setores.R")
 source("manipulacao/indicadores.R")
 
 # Roda as análises
-# knit("manipulacao/analise1.Rmd", output = "visualizacao/analise1.md")
+knit("manipulacao/analise1.Rmd", output = "visualizacao/analise1.md")
+
