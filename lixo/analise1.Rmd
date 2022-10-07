@@ -1,0 +1,163 @@
+---
+title: "A regressividade do IPTU em Vitória e o impacto na inadimplência"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(DescTools) #para gini
+
+imoveis <- readRDS("dados/imoveis.RDS")
+imoveis_residenciais <- readRDS("dados/imoveis_residenciais.RDS")
+indicadores <- readRDS("dados/indicadores.RDS")
+domicilios <- readRDS("dados/domicilios.RDS")
+bairros <- readRDS("dados/bairros.RDS")
+setores <- readRDS("dados/setores.RDS")
+
+# alguns dados
+
+DA_Total <- imoveis@data$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)
+
+DA_Residencial <- imoveis_residenciais@data$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)
+
+DA_Residencial_P <- 
+  ((imoveis_residenciais@data$vlDebitoDA |> sum()) /
+  (imoveis@data$vlDebitoDA |> sum()) *100) |> 
+  round(digits = 2) |> 
+  format(decimal.mark = ",")
+
+```
+
+# A regressividade do IPTU em Vitória e o impacto na inadimplência
+
+<table>
+<tbody>
+<tr>
+<td width = 30%><p>O total da dívida ativa do IPTU da Prefeitura de Vitória é atualmente de R\$ `r DA_Total`, sendo R\$ `r DA_Residencial` cerca de `r DA_Residencial_P`% referente a imóveis residenciais. O montante da dívida ativa do IPTU dos imóveis residenciais representa X% do total cobrado do IPTU. A presente análise busca avaliar formas de reduzir esse nível de inadimplência a partir de uma análise da taxa efetiva do IPTU em contraste com os dados do Censo de 2010.</p>
+<h2>Seleção dos dados</h2>
+<p>Alguns critérios foram aplicados para a seleção dos imóveis incluídos na presente análise:</p>
+<ul>
+<li><p>Apenas imóveis residenciais;</p></li>
+<li><p>Eliminação dos 5 maiores devedores</p></li>
+<li><p>Avaliação apenas do setores censitários com crescimento menor do que 100%</p></li>
+<li><p>Sem imóveis não georreferenciados</p></li>
+</ul></td>
+<td width = 70%>
+
+```{r, fig.cap = ""}
+domicilios_inadimplentes <- 
+  domicilios[order(-domicilios@data$vlDebitoDA),] |> 
+  subset(vlDebitoDA>0)
+tamanho <- domicilios_inadimplentes$vlDebitoDA |> length()
+dom_inad_sem3 <- domicilios_inadimplentes[c(6:tamanho),]
+setores_estaveis <- setores@data |> subset(VariacaoNumDomicilios<100)
+
+plot(dom_inad_sem3$vlDebitoDA)
+```
+
+</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+Uma avaliação da relação entre o valor cobrado do IPTU e o nível de renda mensal médio dos domicílios mostra que o IPTU compromete uma parcela tanto maior da renda quanto menor ela for.
+
+```{r}
+dom_inad_sem3$iptu_rd <- dom_inad_sem3$vlIPTU / dom_inad_sem3$RendaDomicilioMedia
+
+plot(dom_inad_sem3$RendaDomicilioMedia, dom_inad_sem3$iptu_rd)
+plot(dom_inad_sem3$vlVenalImovel, dom_inad_sem3$vlIPTU)
+plot(setores_estaveis$ValorVenalMedio, setores_estaveis$ValorIPTUMedio)
+abline(0,0.0015, col = "red")
+
+```
+
+Como consequência, a taxa de inadimplência é mais elevada nas regiões (setores censitários) com menor renda:
+
+```{r}
+plot(setores$RendaDomicilioMedia, setores$TxInadimplencia)
+```
+
+Resultado de uma proposição de taxa de iptu neutra:
+
+```{r}
+
+domicilios$vlIPTUTeorico <- 0.0015 * domicilios$vlVenalImovel
+setores$valorIPTUTeorico <-
+  domicilios$vlIPTUTeorico |>
+  tapply(domicilios$setor, sum, na.rm = TRUE) /
+  setores$NumDomicilios
+setores <- setores[order(setores$RendaDomicilioMedia),]
+plot(setores$ValorIPTUMedio, type = "l")
+lines(setores$valorIPTUTeorico, col = "red")
+
+
+```
+
+
+Agora, um app
+
+
+```{r}
+
+selectInput("n_breaks", label = "Number of bins:",
+              choices = c(10, 20, 35, 50), selected = 20)
+
+sliderInput("bw_adjust", label = "Bandwidth adjustment:",
+              min = 0.2, max = 2, value = 1, step = 0.2)
+
+
+```
+
+
+A saída:
+
+```{r}
+renderPlot({
+  hist(faithful$eruptions, probability = TRUE,
+       breaks = as.numeric(input$n_breaks),
+       xlab = "Duration (minutes)",
+       main = "Geyser eruption duration")
+
+  dens <- density(faithful$eruptions, adjust = input$bw_adjust)
+  lines(dens, col = "blue")
+})
+```
+

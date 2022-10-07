@@ -7,8 +7,7 @@ library(magrittr)
 library(htmlwidgets)
 library(sp)
 library(stringr)
-library(rmarkdown)
-library(knitr)
+library(rgeos)
 
 # Carrega dados
 domicilios <- readRDS("dados/domicilios.RDS")

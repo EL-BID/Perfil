@@ -1,10 +1,10 @@
 ---
 title: "A regressividade do IPTU em Vitória e o impacto na inadimplência"
 output: html_document
-date: "2022-10-07"
+css: style.css
 ---
 
-```{r setup}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
 ```
@@ -15,6 +15,8 @@ knitr::opts_chunk$set(echo = FALSE)
 
 library(ggplot2)
 library(scales)
+library(magrittr)
+library(plotly, quietly = TRUE, verbose = FALSE, warn.conflicts = FALSE)
 
 # Configurações
 
@@ -58,9 +60,13 @@ IPTU_TOTAL <- domicilios$vlIPTU |> sum(na.rm = TRUE)
 IPTU_N_Pago <- domicilios$vlIPTU |>
   tapply(domicilios$temDebitoDA2022, sum, na.rm = TRUE)
 
-TX_inadimplencia_valor <- IPTU_N_Pago[2]/IPTU_TOTAL
+TX_inadimplencia_valor <- (IPTU_N_Pago[2]/IPTU_TOTAL)|> 
+  round(digits = 2) |>
+  format(decimal.mark = ",")
 
-Tx_inadimplencia_unidades <- (domicilios$temDebitoDA2022 |> sum(na.rm = TRUE)) / (domicilios$temDebitoDA2022 |> length())
+Tx_inadimplencia_unidades <- ((domicilios$temDebitoDA2022 |> sum(na.rm = TRUE)) / (domicilios$temDebitoDA2022 |> length())*100) |> 
+  round(digits = 2) |>
+  format(decimal.mark = ",")
 
 
 ## Sobre caracterização da dívida:
@@ -76,11 +82,10 @@ g1 <- domicilios[c(pfc_domicilios:tamanho),] |>
   subset(vlDebitoDA>0) |> 
   ggplot(aes(x = ordemVlDA, y = vlDebitoDA)) +
   geom_point(shape = 21, size = 1) +
-  # geom_density()+
   labs(
     x = "Domicílios ordenados pelo valor da dívida ativa",
     y = "Valor da dívida ativa (em R$)",
-    title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    title = "Gráfico 1 - Distribuição da dívida ativa do IPTU (imóveis residenciais)",
     colour = NULL
   ) +
   theme_gray() +
@@ -146,7 +151,7 @@ g2 <- setores_estaveis |>
   labs(
     x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
     y = "Valor da dívida ativa",
-    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    title = "Gráfico 2 - Distribuição da dívida ativa do IPTU dos \nimóveis residenciais (por setor censitário)",
     colour = NULL
   ) +
   theme_gray() +
@@ -165,11 +170,11 @@ g2 <- setores_estaveis |>
 g3 <- setores_estaveis |>
   ggplot(aes(x = RendaDomicilioMedia, y = ValorIPTUMedio)) +
   geom_point() +
-  stat_smooth() +
+  stat_smooth(method ="loess", formula = "y~x") +
   labs(
-    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
-    # y = "Valor da dívida ativa",
-    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    x = "Renda domiciliar mensal média (em R$)",
+    y = "Valor médio do IPTU (em R$)",
+    title = "Gráfico 3 - Distribuição dos setores censitários conforme \nvalor do IPTU e renda domiciliar",
     colour = NULL
   ) +
   theme_gray() +
@@ -185,13 +190,13 @@ g3 <- setores_estaveis |>
 # No entanto, aumenta menos do que proporcionalmente, de modo que a 
 # do IPTU em termos do valor venal do imóvel é decrescente
 g4 <- setores_estaveis |>
-  ggplot(aes(x = RendaDomicilioMedia, y = IPTUValorVenal)) +
+  ggplot(aes(x = RendaDomicilioMedia, y = IPTUValorVenal/100)) +
   geom_point() +
-  stat_smooth() +
+  stat_smooth(method ="loess", formula = "y~x", se = FALSE) +
   labs(
-    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
-    # y = "Valor da dívida ativa",
-    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    x = "Renda domiciliar mensal média (em R$)",
+    y = "Taxa efetiva do IPTU",
+    title = "Gráfico 4 - Distribuição dos setores censitários conforme \na Taxa efetiva do IPTU e a renda domiciliar",
     colour = NULL
   ) +
   theme_gray() +
@@ -235,25 +240,25 @@ g5 <- IPTU_FAIXAS  +
   geom_point() +
   labs(
     x = "Valor venal do imóvel (em R$ milhões)",
-    y = "Valor efetivo do IPTU (em R$)",
-    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    y = "Valor do IPTU (em R$)",
+    title = "Gráfico 5 - Distribuição dos setores censitários conforme \nvalor do IPTU e valor venal do imóvel",
     colour = NULL
   ) +
   scale_color_manual(values = c("DarkBlue", "DarkGreen", "DarkRed")) +
   theme_gray() +
   scale_x_continuous(
-    expand = c(0,0),
+    # expand = c(0,1),
     labels = label_number(
       big.mark = ".", 
       decimal.mark = ",",
       scale = 1/1000000)) +
   scale_y_continuous(
-    expand = c(0,0),
+    # expand = c(0,1000),
     labels = label_number(
       big.mark = ".", 
       decimal.mark = ",")) +
   theme(
-    aspect.ratio = .8,
+    aspect.ratio = .4,
     legend.position = "none")
 
 # Isso significa que o IPTU compromente uma parcela maior da renda da população
@@ -261,11 +266,11 @@ g5 <- IPTU_FAIXAS  +
 g6 <- setores_estaveis |>
   ggplot(aes(x = RendaDomicilioMedia, y = IPTURendaMensal/100)) +
   geom_point() +
-  stat_smooth() +
+  stat_smooth(method ="loess", formula = "y~x") +
   labs(
-    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
-    # y = "Valor da dívida ativa",
-    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    x = "Renda domiciliar mensal média (em R$)",
+    y = "Valor do IPTU (% da renda domiciliar)",
+    title = "Gráfico 6 - Distribuição dos setores censitários conforme \no valor do IPTU em proporção à renda domiciliar",
     colour = NULL
   ) +
   theme_gray() +
@@ -284,11 +289,11 @@ g6 <- setores_estaveis |>
 g7 <- setores_estaveis |>
   ggplot(aes(x = RendaDomicilioMedia, y = TxInadimplencia/100)) +
   geom_point() +
-  stat_smooth(se = FALSE) +
+  stat_smooth(method = "loess", formula = "y ~ x", se = FALSE) +
   labs(
-    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
-    # y = "Valor da dívida ativa",
-    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    x = "Renda domiciliar mensal média (em R$)",
+    y = "Taxa de inadimplência",
+    title = "Gráfico 7 - Distribuição dos setores censitários conforme \na taxa de inadimplência",
     colour = NULL
   ) +
   theme_gray() +
@@ -305,11 +310,11 @@ g7 <- setores_estaveis |>
 g8 <- setores_estaveis |>
   ggplot(aes(x = IPTUValorVenal/100, y = TxInadimplencia/100)) +
   geom_point() +
-  stat_smooth(method = "lm") +
+  stat_smooth(method = "lm", formula = "y ~ x") +
   labs(
-    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
-    # y = "Valor da dívida ativa",
-    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    x = "Taxa do IPTU (% do valor venal do imóvel)",
+    y = "Taxa de inadimplência",
+    title = "Gráfico 8 - Relação entre a taxa de inadimplência \ne a taxa do IPTU",
     colour = NULL
   ) +
   theme_gray() +
@@ -354,10 +359,10 @@ g9 <- setores |>
   geom_point() +
   geom_point(aes(x = ordemRenda, y = valorIPTUTeorico), colour = "red") +
   labs(
-    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
-    # y = "Valor da dívida ativa",
-    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
-    colour = NULL
+    x = "ordem crescente de renda domiciliar mensal média",
+    y = "Valor do IPTU (R$)",
+    title = "Gráfico 9 - Distribuição dos setores censitários conforme \no valor médio do IPTU, em ordem crescente da renda \ndomiciliar média",
+    colour = "Legenda"
   ) +
   theme_gray() +
   scale_x_continuous(
@@ -365,8 +370,8 @@ g9 <- setores |>
     labels = label_number(big.mark = ".", decimal.mark = ",")) +
   scale_y_continuous(
     expand = c(0,0),
-    labels = label_number(big.mark = ".", decimal.mark = ",")) +
-  theme(aspect.ratio = .5)
+    labels = label_number(big.mark = ".", decimal.mark = ","))
+
 
 # O resultado em termos de taxa de inadimplência seria assim:
 # valor total do IPTU x Tx de Inadimplência de cada setor
@@ -384,28 +389,130 @@ domicilios$inad_atual <- domicilios$temDebitoDA2022 * domicilios$vlIPTU
 Ampliacao_Arrecadacao <- 
   (domicilios$inad_atual |> sum() - 
   domicilios$inad_teorica |> sum()) |> 
+  round(2) |>
   format(big.mark = ".", decimal.mark = ",", nsmall = 2)
 
 #Resultado em termos de redução da taxa de inadimplência
 # do total de:
 TX_inadimplencia_valor_teorica <-
-  domicilios$inad_teorica |> sum() /
-  domicilios$vlIPTUTeorico |> sum()
+  (domicilios$inad_teorica |> sum() /
+  domicilios$vlIPTUTeorico |> sum() *100) |> 
+  round(2) |>
+  format(big.mark = ".", decimal.mark = ",", nsmall = 2)
 ```
+<TABLE WIDTH = 100%><TR><TD>
 
 
-# A regressividade do IPTU em Vitória e o impacto na inadimplência
+<TABLE WIDTH = 100%>
+  <TR>
+    <TD WIDTH = 40% ROWSPAN = 2>
+O total da dívida ativa do IPTU da Prefeitura de Vitória é atualmente de R\$ `r DA_Total`, sendo R\$ `r DA_Residencial` cerca de `r DA_Residencial_P`% referente a imóveis residenciais. No ano de 2022, `r Tx_inadimplencia_unidades`% dos domicílios do município foram inscritos em dívida ativa. A presente análise busca avaliar formas de reduzir esse nível de inadimplência a partir de uma análise da taxa efetiva do IPTU em contraste com os dados do Censo de 2010.</p>
 
-<table>
+### Seleção dos dados
 
-<tr>
+Alguns critérios foram aplicados para a seleção dos imóveis incluídos na presente análise:
 
-<td rowspan = 2>
+* Apenas imóveis residenciais;
+* Eliminação dos 10 maiores devedores;
+* Avaliação apenas do setores censitários com crescimento menor do que 100%;
+* Apenas imóveis georreferenciados.
 
-O total da dívida ativa do IPTU da Prefeitura de Vitória é atualmente de R\$ `r DA_Total`, sendo R\$ `r DA_Residencial` cerca de `r DA_Residencial_P`% referente a imóveis residenciais. No ano de 2022,  `r Tx_inadimplencia_unidades`% dos domicílios do município foram inscritos em dívida ativa. A presente análise busca avaliar formas de reduzir esse nível de inadimplência a partir de uma análise da taxa efetiva do IPTU em contraste com os dados do Censo de 2010.
+Uma primeira avaliação do perfil da dívida ativa do IPTU para os imóveis residenciais pode obtida a partir dos gráficos 1 e 2, que mostram o valor da dívida ativa de cada imóvel, ordenados em ordem crescente. O Gráfico 1 lista todos os imóveis, enquanto o Gráfico 2 apresenta o valor médio da dívida ativa de cada setor censitário, com os valores máximos e mínimos indicados pela área sombreada.
 
-</td>
+Os dados mostram que há um pequeno número de imóveis/setores com dívida elevada, mas que há uma distribuição muito similar nas demais regiões.
+    </TD><TD WIDTH = 60%>
+```{r}
+g1
+```
+    </TD>
+  </TR><TR>
+    <TD>
+```{r}
+g2
+```
+    </TD>
+  </TR>
+</TABLE>
 
-</tr>
+## A regressividade do IPTU na cidade de Vitória {style="text-align: center;"}
 
-</table>
+<TABLE WIDTH = 100%>
+  <TR>
+    <TD WIDTH = 60%>
+```{r}
+g3
+```
+    </TD><TD WIDTH = 40% ROWSPAN = 2>
+Ao contrastar com os dados do Censo de 2010 (IBGE), é possível observar que o valor médio cobrado é tanto maior quanto maior for a renda domiciliar média do setor censitário (Gráfico 3). No entanto, o Gráfico 4 nos revela que a taxa efetiva do IPTU - isto é a relação entre o que é efetivamente cobrado no carnê do IPTU e o valor venal do imóvel - é tanto <i>maior</i> quanto <i>menor</i> for a renda domiciliar média. Com isso, é possível afirmar que a cobrança do IPTU em Vitória possui uma estrutura regressiva, de modo a recair mais sobre a população de mais baixa renda.
+
+Determinar os motivos da regressividade do IPTU em Vitória requer uma análise das regras estabelecidas pela municipalidade para a determinação do seu valor. No entanto, uma avaliação preliminar pode ser feita a partir da análise do Gráfico 4, que apresenta o valor efetivo do IPTU para cada imóvel residencial (eixo das ordenadas) em relação ao seu valor venal (eixo das abiscissas).
+
+Nesse Gráfico, estão destacadas em linhas vermelhas as "faixas" mais comuns de valores cobrados (isto é, valores que foram cobrados em mais de 100 imóveis). As reflexões que esse gráfico sugere são:
+
+* É possível perceber que os valore smais elevados do IPTU são pagos exclusivamente por imóveis cujo valor venal é inferior a R\$ 2 milhões (pontos destacados em vermelho);
+
+* Há um valor máximo (de R\$ `r Faixas[1] |> round(2) |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)`) além do qual o valor do IPTU não aumento, independente do valor venal do imóvel. 
+
+* Há um conjunto de imóveis de elevado valor venal (maior do que R\$ 4 milhões) que pagam uma taxa bem inferior ao patamar máximo de R\$ `r Faixas[1] |> round(2) |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)`.
+
+* Por fim, embora o valor mínimo cobrado pelo IPTU aumente em decorrência do aumento do valor venal do imóvel, muitos dos imóveis de valor mais baixo são cobrados pelas faixas mais elevadas.
+    </TD>
+  </TR><TR>
+    <TD>
+```{r}
+g4
+```
+    </TD>
+  </TR><TR>
+    <TD COLSPAN = 2 STYLE = "text-align: center;">
+```{r}
+g5
+```
+    </TD>
+  </TR>
+</TABLE>
+
+## Inadimplência {style="text-align: center"}
+
+<TABLE>
+  <TR>
+    <TD WIDTH = 50%>
+Como consequência das regras de cobrança do IPTU, o imposto tende a comprometer uma parcela maior da renda da população mais pobre. O Gráfico 6 mostra exatamente esse ponto ao relacionar a proporção do valor anual do IPTU em relação à renda domicilar mensal (eixo das ordenadas) e a própria renda domiciliar mensal de cada setor censitário.
+
+Os reflexos sobre a inadimplência são constatados ao observar que a taxa de inadimplência (Gráfico 7) apresenta o mesmo comportamento de distribuição. Ou seja, a população que não paga o carnê do IPTU é aquela que é mais cobrada (em termos relativos à renda) e, também, é a parcela mais pobre.
+
+O Gráfico 8 nos permite alcançar a mesma conclusão ao mostrar que a taxa de inadimplência é tanto maior quanto maior for a taxa efetiva do IPTU em relação ao valor venal do imóvel.
+    </TD><TD WIDTH = 50%>
+```{r}
+g6
+```
+    </TD>
+  </TR><TR>
+    <TD>
+```{r}
+g7
+```
+    </TD><TD>
+```{r}
+g8
+```
+    </TD
+  </TR>
+</TABLE>
+
+## Cenário com imposto neutro sem ampliação da carga tributária {style="text-align: center"}
+
+
+Partindo do cenário apresentado, é possível pensar em políticas para ampliar a justiça tributária e reduzir o nível de inadimplência. Como um exemplo exploratório, podemos apresentar um cenário no qual cobra-se uma taxa única de IPTU sobre o valor venal dos imóveis, de modo a termos um imposto neutro. O Gráfico 9 contrasta o valor que seria cobrado em média em cada setor censitário com um imposto neutro (pontos em vermelho) com o valor cobrado atualmente (pontos pretos).
+
+<CENTER>
+```{r}
+ggplotly(g9)
+```
+</CENTER>
+
+Se fosse instituída uma mesma taxa de `r taxa`% para todos os imóveis, o valor total cobrado de IPTU da população continuaria o mesmo, mas o nível de inadimplência reduziria em função da cobrança passar a insidir mais sobre aqueles que possuem maior capacidade de pagamento.
+
+Aplicando esses valores de IPTU para a estrutura de inadimplência do ano de 2022, teríamos uma redução da taxa de inadimplência de `r TX_inadimplencia_valor`% para `r TX_inadimplencia_valor_teorica`%, o que representaria um ganho para os cofres públicos de R\$ `r Ampliacao_Arrecadacao`, mesmo sem ampliar a carga tributária.
+
+</TD></TR></TABLE>

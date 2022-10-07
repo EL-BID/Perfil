@@ -3,7 +3,7 @@ ui <- navbarPage(
   collapsible = TRUE,
   windowTitle = "PMV - Perfil da Dívida Ativa (IPTU)",
   title = "Perfil",
-  selected = "Análise 1",
+  # selected = "Análise 1",
   
   header = tagList(
     # Painel "carregando.." (para ocultar conteúdo enquanto carrega)
@@ -106,7 +106,7 @@ ui <- navbarPage(
                     font-size: 14px;
                     color: black;
                   ",
-                icon = icon("times")
+                icon = icon("times", verify_fa = FALSE)
               ) |> absolutePanel(top = 0, right = 5)
             )
           ),
@@ -207,9 +207,13 @@ ui <- navbarPage(
 
   tabPanel(
     "Análise 1",
+    tags$iframe(
+      src = "/Perfil/analise1.html",
+      width = "100%",
+      style = "border:none; height: calc(100vh - 50px);")
     # includeHTML(rmarkdown::render("analise1.Rmd"))
     # includeMarkdown(knit("analise1.Rmd")) |> div(style = "margin:20px")
-    includeMarkdown("analise1.md") |> div(style = "margin:20px")
+    # includeMarkdown("analise1.md") |> div(style = "margin:20px")
     
   ),
   

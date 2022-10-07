@@ -1,0 +1,13 @@
+name: analise1
+title: analise1
+username:
+account: straessli
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7245218
+bundleId: 6380421
+url: https://straessli.shinyapps.io/analise1/
+when: 1665164689.25906
+lastSyncTime: 1665164689.25907
+asMultiple: FALSE
+asStatic: FALSE

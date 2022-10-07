@@ -1,0 +1,386 @@
+library(ggplot2)
+library(scales)
+
+### Configuração
+
+# Quantidade de domicílios que serão considerados pontos fora das curvas +1
+pfc_domicilios <- 11
+
+# Ponto de corte para a variação dos domicílios dos setores
+pfc_setores <- 100
+
+### Carrega informações
+imoveis <- readRDS("visualizacao/dados/imoveis.RDS")
+domicilios <- readRDS("visualizacao/dados/domicilios.RDS")
+setores <- readRDS("visualizacao/dados/setores.RDS")
+
+imoveis <- imoveis@data
+domicilios <- domicilios@data
+setores <- setores@data
+
+##
+setores_estaveis <- setores |> subset(VariacaoNumDomicilios<pfc_setores)
+domicilios_inadimplentes <- domicilios |> subset(vlDebitoDA>0)
+domicilios_adimplentes <- domicilios |> subset(vlDebitoDA==0)
+
+# Alguns dados básicos sobre a dívida:
+
+# Valor total
+DA_Total <- imoveis$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)
+
+# Valor residencial (moeda e percentual)
+DA_Residencial <- domicilios$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)
+
+DA_Residencial_P <- 
+  ((domicilios$vlDebitoDA |> sum()) /
+     (imoveis$vlDebitoDA |> sum()) *100) |> 
+  round(digits = 2) |> 
+  format(decimal.mark = ",")
+
+# Taxa de inadimplência 2022: valor e unidades
+
+IPTU_TOTAL <- domicilios$vlIPTU |> sum(na.rm = TRUE)
+
+IPTU_N_Pago <- domicilios$vlIPTU |>
+  tapply(domicilios$temDebitoDA2022, sum, na.rm = TRUE)
+
+TX_inadimplencia_valor <- IPTU_N_Pago[2]/IPTU_TOTAL
+
+Tx_inadimplencia_unidades <- (domicilios$temDebitoDA2022 |> sum(na.rm = TRUE)) / (domicilios$temDebitoDA2022 |> length())
+
+
+## Sobre caracterização da dívida:
+
+# Domicílios ordenados pela dívida
+tamanho <- domicilios$inscricaoCadastral |> length()
+
+domicilios <- 
+  domicilios[order(-domicilios$vlDebitoDA),]
+domicilios$ordemVlDA <- tamanho:1
+
+g1 <- domicilios[c(pfc_domicilios:tamanho),] |>
+  subset(vlDebitoDA>0) |> 
+  ggplot(aes(x = ordemVlDA, y = vlDebitoDA)) +
+  geom_point(shape = 21, size = 1) +
+  # geom_density()+
+  labs(
+    x = "Domicílios ordenados pelo valor da dívida ativa",
+    y = "Valor da dívida ativa (em R$)",
+    title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  theme(aspect.ratio = .5)
+
+# Setoes ordenados pela dívida
+num_setores <- setores$Name |> length()
+
+setores$DividaTotal <- 
+  domicilios[c(pfc_domicilios:tamanho),"vlDebitoDA"] |>
+  tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE)
+
+setores$Inadimplentes <- 
+  domicilios[c(pfc_domicilios:tamanho),"Inadimplentes"] |>
+  tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE)
+
+setores$DividaMedia <- 
+  setores$DividaTotal /
+  setores$Inadimplentes
+
+setores$DAMax <- 
+  domicilios[c(pfc_domicilios:tamanho),"vlDebitoDA"] |>
+  tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], max, na.rm = TRUE)
+
+setores$DAMin <- 
+  domicilios_inadimplentes$vlDebitoDA |>
+  tapply(domicilios_inadimplentes$setor, min, na.rm = TRUE)
+
+domicilios$temDoc <- domicilios$cpfCnpjResponsavel |> is.na() |> not()
+
+setores$temDoc <- 
+  domicilios[c(pfc_domicilios:tamanho),"temDoc"] |>
+  tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE)
+
+setores$temDocP <- 
+  setores$temDoc /
+  setores$NumDomicilios
+
+setores <- setores[order(setores$DividaMedia),]
+setores$ordemDAMedia <- 1:num_setores
+
+setores <- setores[order(setores$ValorIPTUMedio),]
+setores$ordemIPTUMedio <- 1:num_setores
+
+setores <- setores[order(setores$RendaDomicilioMedia),]
+setores$ordemRenda <- 1:num_setores
+
+setores <- setores[order(setores$Name),]
+setores_estaveis <- setores |> subset(VariacaoNumDomicilios<pfc_setores)
+
+
+# Setores ordenados pela dívida, com bandas 
+g2 <- setores_estaveis |>
+  ggplot(aes(x = ordemDAMedia, y = DividaMedia)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = DAMin, ymax = DAMax), alpha = 0.3) +
+  labs(
+    x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    y = "Valor da dívida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  theme(aspect.ratio = .5)
+
+
+# Regressividade do imposto
+
+# Podemos ver que o valor do IPTU aumenta com o valor da renda
+setores$IPTUValorVenal
+g3 <- setores_estaveis |>
+  ggplot(aes(x = RendaDomicilioMedia, y = ValorIPTUMedio)) +
+  geom_point() +
+  stat_smooth() +
+  labs(
+    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    # y = "Valor da dívida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  theme(aspect.ratio = .5)
+
+
+# No entanto, aumenta menos do que proporcionalmente, de modo que a 
+# do IPTU em termos do valor venal do imóvel é decrescente
+g4 <- setores_estaveis |>
+  ggplot(aes(x = RendaDomicilioMedia, y = IPTUValorVenal)) +
+  geom_point() +
+  stat_smooth() +
+  labs(
+    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    # y = "Valor da dívida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = percent) +
+  theme(aspect.ratio = .5)
+
+
+# O valor efetivo do IPTU opera por faixas:
+Modas <- domicilios$NumDomicilios |>
+  tapply(domicilios$vlIPTU, sum, na.rm = TRUE)
+Modas <- Modas |> subset(Modas > 100)
+Modas <- Modas[order(-as.numeric(names(Modas)))]
+Faixas <- Modas |> names() |> as.numeric()
+
+domicilios$IPTUSuperior <- domicilios$vlIPTU > Faixas[1]
+domicilios[
+  domicilios$vlVenalImovel > 4000000 & 
+    domicilios$vlIPTU < Faixas[1],
+  "IPTUSuperior"] <- "Fora"
+
+IPTU_FAIXAS <- 
+  domicilios[c(pfc_domicilios:tamanho),] |>
+  ggplot(aes(x = vlVenalImovel, y = vlIPTU, colour = IPTUSuperior))
+
+for (x in Faixas) {
+  IPTU_FAIXAS <- IPTU_FAIXAS +
+    geom_hline(yintercept = x, color = "red", alpha = .2)
+}
+
+# Nesse gráfico, duas informações se destacam: primeiro, as faixas de valores de
+# IPTU, que estabelecem um teto para a cobrança para imóveis de alto valor
+# Segundo, os valores de IPTU que superam essa faixa incidem sobre imóveis de 
+# mais baixo valor
+# Ainda há um terceiro: imóveis de alto valor com baixa taxa de IPTU
+g5 <- IPTU_FAIXAS  +
+  geom_point() +
+  labs(
+    x = "Valor venal do imóvel (em R$ milhões)",
+    y = "Valor efetivo do IPTU (em R$)",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  scale_color_manual(values = c("DarkBlue", "DarkGreen", "DarkRed")) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(
+      big.mark = ".", 
+      decimal.mark = ",",
+      scale = 1/1000000)) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = label_number(
+      big.mark = ".", 
+      decimal.mark = ",")) +
+  theme(
+    aspect.ratio = .8,
+    legend.position = "none")
+
+# Isso significa que o IPTU compromente uma parcela maior da renda da população
+# mais pobre
+g6 <- setores_estaveis |>
+  ggplot(aes(x = RendaDomicilioMedia, y = IPTURendaMensal/100)) +
+  geom_point() +
+  stat_smooth() +
+  labs(
+    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    # y = "Valor da dívida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = percent) +
+  theme(aspect.ratio = .5)
+
+
+# Efeitos sobre inadimplência:
+
+# A inadimplência se concentra nos setores de mais baixa renda
+g7 <- setores_estaveis |>
+  ggplot(aes(x = RendaDomicilioMedia, y = TxInadimplencia/100)) +
+  geom_point() +
+  stat_smooth(se = FALSE) +
+  labs(
+    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    # y = "Valor da dívida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = percent) +
+  theme(aspect.ratio = .5)
+
+# É possível observar a existência de coorelação entre as taxas e a inadimplência
+
+g8 <- setores_estaveis |>
+  ggplot(aes(x = IPTUValorVenal/100, y = TxInadimplencia/100)) +
+  geom_point() +
+  stat_smooth(method = "lm") +
+  labs(
+    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    # y = "Valor da dívida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = percent) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = percent) +
+  theme(aspect.ratio = .5)
+
+# O que a análise sugere é que parte da inadimplência se explica pelo impacto que
+# o IPTU gera para os contribuintes.
+
+# Portanto, uma forma de reduzir a inadimplência é tornando a taxa proporcional 
+# ao valor venal do imóvel, de modo a impactar menos a população de mais baixa
+# renda; Exemplo de imposto neutro sem impacto no montanto cobrado
+
+# Os parâmetros são: aumento da carga tributária; progressividade
+# se progressividade é 0, imposto netro
+# se aumento da carga tributária é 0
+
+
+taxa <- domicilios$vlIPTU |> sum() / 
+  (domicilios |> subset(vlIPTU >0))$vlVenalImovel |> sum()
+
+domicilios$vlIPTUTeorico <- taxa * domicilios$vlVenalImovel
+# É preciso zerar IPTU teórico de quem não paga IPTU
+domicilios[domicilios$vlIPTU == 0,"vlIPTUTeorico"] <- 0
+
+setores <- setores[order(setores$Name),]
+setores$valorIPTUTeoricoTotal <-
+  (domicilios[c(pfc_domicilios:tamanho),"vlIPTUTeorico"] |>
+     tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE))
+setores$valorIPTUTeorico <-
+  setores$valorIPTUTeoricoTotal /
+  (domicilios[c(pfc_domicilios:tamanho),"NumDomicilios"] |>
+  tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE))
+
+setores$
+setores |>
+  ggplot() +
+  geom_point(aes(x = ordemRenda, y = ValorIPTUMedio, color = RendaDomicilioMedia)) +
+  geom_point(aes(x = ordemRenda, y = valorIPTUTeorico), color = "red") +
+  labs(
+    x = "Setores orde\nnados pela media da divida ativa dos domicilios inadimplentes",
+    y = "Valor da divida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    color = "Legenda"
+  ) +
+  scale_color_manual(values = c("Atual" = "black", "Neutro" = "red"))
+scale_man
+# +
+  # theme_gray() +
+  # scale_x_continuous(
+  #   expand = c(0,0),
+  #   labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  # scale_y_continuous(
+  #   expand = c(0,0),
+  #   labels = label_number(big.mark = ".", decimal.mark = ","))
+# +
+#   theme(aspect.ratio = .5, legend.position = "right") 
+
+# O resultado em termos de taxa de inadimplência seria assim:
+# valor total do IPTU x Tx de Inadimplência de cada setor
+
+# Esse gráfico é apenas para observar que a taxa de inadimplência é maior nos setores
+# de menor valor médio do IPTU e de menor renda
+# setores_estaveis |>
+#   ggplot(aes(x = ordemRenda, y = ValorIPTUMedio, colour = TxInadimplencia)) +
+#   geom_point()
+
+domicilios$inad_teorica <- domicilios$temDebitoDA2022 * domicilios$vlIPTUTeorico
+domicilios$inad_atual <- domicilios$temDebitoDA2022 * domicilios$vlIPTU
+
+# Resultado da ampliação da arrecadação como redução da inadimplência.
+Ampliacao_Arrecadacao <- 
+  (domicilios$inad_atual |> sum() - 
+  domicilios$inad_teorica |> sum()) |> 
+  format(big.mark = ".", decimal.mark = ",", nsmall = 2)
+
+#Resultado em termos de redução da taxa de inadimplência
+# do total de:
+TX_inadimplencia_valor_teorica <-
+  domicilios$inad_teorica |> sum() /
+  domicilios$vlIPTUTeorico |> sum()
+
