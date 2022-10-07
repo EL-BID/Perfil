@@ -1,28 +1,39 @@
 library(ggplot2)
 library(scales)
 
-# Carrega informações
+### Configuração
 
+# Quantidade de domicílios que serão considerados pontos fora das curvas +1
+pfc_domicilios <- 11
+
+# Ponto de corte para a variação dos domicílios dos setores
+pfc_setores <- 100
+
+### Carrega informações
 imoveis <- readRDS("visualizacao/dados/imoveis.RDS")
 domicilios <- readRDS("visualizacao/dados/domicilios.RDS")
-bairros <- readRDS("visualizacao/dados/bairros.RDS")
 setores <- readRDS("visualizacao/dados/setores.RDS")
 
-setores_estaveis <- setores@data |> subset(VariacaoNumDomicilios<100)
-domicilios_inadimplentes <- domicilios |> subset(vlDebitoDA >0)
+imoveis <- imoveis@data
+domicilios <- domicilios@data
+setores <- setores@data
 
+##
+setores_estaveis <- setores |> subset(VariacaoNumDomicilios<pfc_setores)
+domicilios_inadimplentes <- domicilios |> subset(vlDebitoDA>0)
+domicilios_adimplentes <- domicilios |> subset(vlDebitoDA==0)
 
 # Alguns dados básicos sobre a dívida:
 
 # Valor total
-DA_Total <- imoveis@data$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)
+DA_Total <- imoveis$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)
 
 # Valor residencial (moeda e percentual)
-DA_Residencial <- imoveis_residenciais@data$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)
+DA_Residencial <- domicilios$vlDebitoDA |> sum() |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)
 
 DA_Residencial_P <- 
-  ((imoveis_residenciais@data$vlDebitoDA |> sum()) /
-     (imoveis@data$vlDebitoDA |> sum()) *100) |> 
+  ((domicilios$vlDebitoDA |> sum()) /
+     (imoveis$vlDebitoDA |> sum()) *100) |> 
   round(digits = 2) |> 
   format(decimal.mark = ",")
 
@@ -41,21 +52,17 @@ Tx_inadimplencia_unidades <- (domicilios$temDebitoDA2022 |> sum(na.rm = TRUE)) /
 ## Sobre caracterização da dívida:
 
 # Domicílios ordenados pela dívida
-tamanho <- domicilios@data$inscricaoCadastral |> length()
+tamanho <- domicilios$inscricaoCadastral |> length()
 
 domicilios <- 
-  domicilios[order(-domicilios@data$vlDebitoDA),]
-domicilios$ordemVlDA <- 1:tamanho
+  domicilios[order(-domicilios$vlDebitoDA),]
+domicilios$ordemVlDA <- tamanho:1
 
-
-teste <- function(x) {
-  label_number(x, big.mark = ".", decimal.mark = ",")
-}
-
-domicilios@data[c(11:tamanho),] |>
+g1 <- domicilios[c(pfc_domicilios:tamanho),] |>
   subset(vlDebitoDA>0) |> 
   ggplot(aes(x = ordemVlDA, y = vlDebitoDA)) +
-  geom_point() +
+  geom_point(shape = 21, size = 1) +
+  # geom_density()+
   labs(
     x = "Domicílios ordenados pelo valor da dívida ativa",
     y = "Valor da dívida ativa (em R$)",
@@ -63,28 +70,32 @@ domicilios@data[c(11:tamanho),] |>
     colour = NULL
   ) +
   theme_gray() +
-  scale_x_continuous(labels = label_number(big.mark = ".", decimal.mark = ",")) +
-  scale_y_continuous(labels = label_number(big.mark = ".", decimal.mark = ","))
-
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  theme(aspect.ratio = .5)
 
 # Setoes ordenados pela dívida
 num_setores <- setores$Name |> length()
 
 setores$DividaTotal <- 
-  domicilios@data[c(11:tamanho),"vlDebitoDA"] |>
-  tapply(domicilios@data[c(11:tamanho),"setor"], sum, na.rm = TRUE)
+  domicilios[c(pfc_domicilios:tamanho),"vlDebitoDA"] |>
+  tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE)
 
 setores$Inadimplentes <- 
-  domicilios@data[c(11:tamanho),"Inadimplentes"] |>
-  tapply(domicilios@data[c(11:tamanho),"setor"], sum, na.rm = TRUE)
+  domicilios[c(pfc_domicilios:tamanho),"Inadimplentes"] |>
+  tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE)
 
 setores$DividaMedia <- 
   setores$DividaTotal /
   setores$Inadimplentes
 
 setores$DAMax <- 
-  domicilios@data[c(11:tamanho),"vlDebitoDA"] |>
-  tapply(domicilios@data[c(11:tamanho),"setor"], max, na.rm = TRUE)
+  domicilios[c(pfc_domicilios:tamanho),"vlDebitoDA"] |>
+  tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], max, na.rm = TRUE)
 
 setores$DAMin <- 
   domicilios_inadimplentes$vlDebitoDA |>
@@ -93,8 +104,8 @@ setores$DAMin <-
 domicilios$temDoc <- domicilios$cpfCnpjResponsavel |> is.na() |> not()
 
 setores$temDoc <- 
-  domicilios@data[c(11:tamanho),"temDoc"] |>
-  tapply(domicilios@data[c(11:tamanho),"setor"], sum, na.rm = TRUE)
+  domicilios[c(pfc_domicilios:tamanho),"temDoc"] |>
+  tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE)
 
 setores$temDocP <- 
   setores$temDoc /
@@ -109,45 +120,96 @@ setores$ordemIPTUMedio <- 1:num_setores
 setores <- setores[order(setores$RendaDomicilioMedia),]
 setores$ordemRenda <- 1:num_setores
 
-setores_estaveis <- setores@data |> subset(VariacaoNumDomicilios<100)
+setores_estaveis <- setores |> subset(VariacaoNumDomicilios<pfc_setores)
 
-setores_estaveis |>
+
+# Setores ordenados pela dívida, com bandas 
+g2 <- setores_estaveis |>
   ggplot(aes(x = ordemDAMedia, y = DividaMedia)) +
   geom_line() +
-  geom_ribbon(aes(ymin = DAMin, ymax = DAMax), alpha = 0.2)
+  geom_ribbon(aes(ymin = DAMin, ymax = DAMax), alpha = 0.3) +
+  labs(
+    x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    y = "Valor da dívida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  theme(aspect.ratio = .5)
+
 
 # Regressividade do imposto
 
 # Podemos ver que o valor do IPTU aumenta com o valor da renda
 setores$IPTUValorVenal
-setores_estaveis |>
+g3 <- setores_estaveis |>
   ggplot(aes(x = RendaDomicilioMedia, y = ValorIPTUMedio)) +
   geom_point() +
-  stat_smooth()
+  stat_smooth() +
+  labs(
+    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    # y = "Valor da dívida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  theme(aspect.ratio = .5)
+
 
 # No entanto, aumenta menos do que proporcionalmente, de modo que a 
 # do IPTU em termos do valor venal do imóvel é decrescente
 setores_estaveis |>
   ggplot(aes(x = RendaDomicilioMedia, y = IPTUValorVenal)) +
   geom_point() +
-  stat_smooth()
+  stat_smooth() +
+  labs(
+    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    # y = "Valor da dívida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = percent) +
+  theme(aspect.ratio = .5)
+
 
 # O valor efetivo do IPTU opera por faixas:
-Modas <- domicilios@data$NumDomicilios |>
-  tapply(domicilios@data$vlIPTU, sum, na.rm = TRUE)
+Modas <- domicilios$NumDomicilios |>
+  tapply(domicilios$vlIPTU, sum, na.rm = TRUE)
 Modas <- Modas |> subset(Modas > 100)
 Modas <- Modas[order(-as.numeric(names(Modas)))]
 Faixas <- Modas |> names() |> as.numeric()
 
 domicilios$IPTUSuperior <- domicilios$vlIPTU > Faixas[1]
+domicilios[
+  domicilios$vlVenalImovel > 4000000 & 
+    domicilios$vlIPTU < Faixas[1],
+  "IPTUSuperior"] <- 2
 
 IPTU_FAIXAS <- 
-  domicilios@data[c(11:tamanho),] |>
+  domicilios[c(pfc_domicilios:tamanho),] |>
   ggplot(aes(x = vlVenalImovel, y = vlIPTU, colour = IPTUSuperior))
 
 for (x in Faixas) {
   IPTU_FAIXAS <- IPTU_FAIXAS +
-    geom_hline(yintercept = x, color = "red")
+    geom_hline(yintercept = x, color = "red", alpha = .2)
 }
 
 # Nesse gráfico, duas informações se destacam: primeiro, as faixas de valores de
@@ -155,8 +217,22 @@ for (x in Faixas) {
 # Segundo, os valores de IPTU que superam essa faixa incidem sobre imóveis de 
 # mais baixo valor
 # Ainda há um terceiro: imóveis de alto valor com baixa taxa de IPTU
-IPTU_FAIXAS  +
-  geom_point()
+g3 <- IPTU_FAIXAS  +
+  geom_point() +
+  labs(
+    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    # y = "Valor da dívida ativa",
+    # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
+    colour = NULL
+  ) +
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = percent) +
+  theme(aspect.ratio = 1)
 
 
 # Isso significa que o IPTU compromente uma parcela maior da renda da população
@@ -198,18 +274,18 @@ domicilios[domicilios$vlIPTU == 0,"vlIPTUTeorico"] <- 0
 
 setores <- setores[order(setores$Name),]
 setores$valorIPTUTeoricoTotal <-
-  (domicilios@data[c(11:tamanho),"vlIPTUTeorico"] |>
-     tapply(domicilios@data[c(11:tamanho),"setor"], sum, na.rm = TRUE))
+  (domicilios[c(pfc_domicilios:tamanho),"vlIPTUTeorico"] |>
+     tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE))
 setores$valorIPTUTeorico <-
   setores$valorIPTUTeoricoTotal /
-  (domicilios@data[c(11:tamanho),"NumDomicilios"] |>
-  tapply(domicilios@data[c(11:tamanho),"setor"], sum, na.rm = TRUE))
+  (domicilios[c(pfc_domicilios:tamanho),"NumDomicilios"] |>
+  tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE))
 
 setores <- setores[order(setores$RendaDomicilioMedia),]
 plot(setores$ValorIPTUMedio, type = "l")
 lines(setores$valorIPTUTeorico, col = "red")
 
-setores@data |>
+setores |>
   ggplot(aes(x = ordemRenda, y = ValorIPTUMedio)) +
   geom_point() +
   geom_point(aes(x = ordemRenda, y = valorIPTUTeorico), colour = "red")
@@ -290,7 +366,7 @@ setores_estaveis |>
 
 
 setores$RendaDomicilioMedia
-setores@data |>
+setores |>
   ggplot(aes(x = ValorVenalMedio, y = RendaDomicilioMedia)) +
   geom_point() +
   stat_smooth()
