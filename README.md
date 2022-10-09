@@ -1,7 +1,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=perfil&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=perfil)
 
-<h1 align="center">Perfil da Dívida Ativa do IPTU</h1>
-<p align="center"><img src="visualizacao/www/screenshot.jpg" alt="Perfil da Dívida Ativa do IPTU" style="border: 1px solid;"></p> 
+#Perfil da Dívida Ativa do IPTU {style=text-align:center}
+<p align="center"><img src="visualizacao/www/screenshot.jpg" alt="Perfil da Dívida Ativa do IPTU" style="border: 1px solid #000000;"></p> 
 
 
 ## Descrição e contexto
@@ -26,11 +26,15 @@ Novos estudos podem ser criados em documentos R Markdown e facilmente incluidos 
 ## Guia de instalação
 ---
 
-INTRODUÇÃO
-ESTRUTURA DAS PASTAS DO REPOSITÓRIO
+A implementação da aplicação requer três passos:
 
+* Personalização do código;
+* Preparação dos dados;
+* Implantação do ambiente de visualização.
 
-CLONAR REPOSITÓRIO
+### Personalização do código
+
+O primeiro passo para a personalização do código consiste em clonar o repositório para um ambiente local. 
 
 INCLUIR DADOS PRÓPRIOS NA PASTA DADOS
 

@@ -1,10 +1,9 @@
 # trata as informações coletadas
+
 library(rmarkdown)
 
 dir.create("manipulacao/dados", showWarnings = FALSE)
-dir.create("visualizacao/painel/dados", showWarnings = FALSE)
-dir.create("visualizacao/analise1/dados", showWarnings = FALSE)
-dir.create("visualizacao/analise2dados", showWarnings = FALSE)
+dir.create("visualizacao/dados", showWarnings = FALSE)
 
 # Cruza os georreferenciamento dos imóveis
 source("manipulacao/imoveis.R")

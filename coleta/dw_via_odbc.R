@@ -4,7 +4,7 @@ library(DBI)
 library(odbc)
 library(dplyr)
 
-con_dw <- dbConnect(odbc(), dsn= "PMVBigData")
+con_dw <- dbConnect(odbc(), dsn= dsn_name)
 
 imoveis <- 
   dbReadTable(con_dw, "BI_DadosInscricaoImobiliaria")
