@@ -1,49 +1,15 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=perfil&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=perfil)
 
-<h1 align="center"> Perfil da Dívida Ativa do IPTU</h1>
-<p align="center"><img src="img/screenshot.jpg"/></p> 
+<h1 align="center">Perfil da Dívida Ativa do IPTU</h1>
+<p align="center"><img src="img/screenshot.jpg" alt="Perfil da Dívida Ativa do IPTU" style="border: 1px;></p> 
 
-## Tabla de contenidos:
+## Descrição e contexto
 ---
-
-- [Badges o escudos](#badges-o-escudos)
-- [Descripción y contexto](#descripción-y-contexto)
-- [Guía de usuario](#guía-de-usuario)
-- [Guía de instalación](#guía-de-instalación)
-- [Cómo contribuir](#cómo-contribuir)
-- [Código de conducta](#código-de-conducta)
-- [Autor/es](#autores)
-- [Información adicional](#información-adicional)
-- [Licencia](#licencia)
-- [Limitación de responsabilidades - Solo BID](#limitación-de-responsabilidades)
-
-## Badges o escudos
----
-Es común en muchos repositorios open source el uso de badges o escudos para dar visbilidad el uso de microservicios, licencias, descargas, etc. Recomendamos revisar la iniciativa https://shields.io/ donde según consideres necesario podrás generar badges para tu repo. 
-
-### Ejemplos de badges
-
-- code coverage percentage: ![coverage](https://img.shields.io/badge/coverage-80%25-yellowgreen)
-- stable release version: ![version](https://img.shields.io/badge/version-1.2.3-blue)
-- package manager release: ![gem](https://img.shields.io/badge/gem-2.2.0-blue)
-- status of third-party dependencies: ![dependencies](https://img.shields.io/badge/dependencies-out%20of%20date-orange)
-- static code analysis grade: ![codacy](https://img.shields.io/badge/codacy-B-green)
-- [SemVer](https://semver.org/) version observance: ![semver](https://img.shields.io/badge/semver-2.0.0-blue)
-- amount of [Liberapay](https://liberapay.com/) donations per week: ![receives](https://img.shields.io/badge/receives-2.00%20USD%2Fweek-yellow)
-- Python package downloads: ![downloads](https://img.shields.io/badge/downloads-13k%2Fmonth-brightgreen)
-- Chrome Web Store extension rating: ![rating](https://img.shields.io/badge/rating-★★★★☆-brightgreen)
-- [Uptime Robot](https://uptimerobot.com) percentage: ![uptime](https://img.shields.io/badge/uptime-100%25-brightgreen)
-
-### Badges que solicitamos:
----
-En la iniciativa Código para el Desarrollo solicitamos a los equipos que suman sus herramientas al catálogo de sumar el badge generado por el uso del microservicio de evaluación estática de código SonarCloud.
-
-El badge se ve así y redirige al reporte de evaluación estática del último commit de la herramienta:
+Perfil da dívida ativa do IPTU é uma ferramenta que permite uma avaliação do atual estoque da dívida ativa do IPTU de um município a partir do perfil dos devedores, construído a partir do cruzamento dos dados da Prefeitura com bases externas. A aplicação foi elaborada como uma prova de conceito de uso de dados disponíveis para resolução de problemas urbanos no âmbito da Cooperação Técnica BR-T1496 - Potencializando o uso de Soluções de Big Data para Cidades Inteligentes.
 
 
 
-## Descripción y contexto
----
+Para a construção da Prova de Conceito, a base externa escolhida foi a dos dados do Censo de 2010 do IBGE.
 Esto es un archivo README. Debe contener la documentación de soporte uso de la herramienta digital. Las siguientes secciones son las secciones recomendadas que debes poner incluir en cualquier herramienta digital. Puedes descargar este archivo para que te sirva como plantilla.
 
 Asegúrate de empezar este archivo con una breve descripción sobre las funcionalidades y contexto de la herramienta digital. Sé conciso y al grano.
@@ -78,9 +44,13 @@ El código de conducta establece las normas sociales, reglas y responsabilidades
 
 La plataforma Github premia y ayuda a los repositorios dispongan de este archivo. Al crear CODE_OF_CONDUCT.md puedes empezar desde una plantilla sugerida por ellos. Puedes leer más sobre cómo crear un archivo de Código de Conducta (aquí)[https://help.github.com/articles/adding-a-code-of-conduct-to-your-project/]
 
-## Autor/es
+## Autor
 ---
-Nombra a el/los autor/es original/es. Consulta con ellos antes de publicar un email o un nombre personal. Una manera muy común es dirigirlos a sus cuentas de redes sociales.
+[Rodrigo Franklin](mailto:rodrigo.franklin@ufes.br "Perfil da dívida")
+
+## Colaborador
+---
+[Everlam Elias Montibeler](mailto:everlam.elias@ufes.br "Perfil da dívida")
 
 ## Información adicional
 ---
