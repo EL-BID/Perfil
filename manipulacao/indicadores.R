@@ -396,6 +396,46 @@ bairros$InadimplentesPercentual <-
   (bairros$Inadimplentes /
      sum(bairros$Inadimplentes) *100)
 
+# IRDA
+indicadores <- rbind(indicadores,
+                     c("Índice de recorrência de inscrição em DA","IRDA","numeral","media"))
+
+domicilios$IRDA <-
+  rowSums(domicilios@data[,c("temDebitoDA2018",
+                             "temDebitoDA2019",
+                             "temDebitoDA2020",
+                             "temDebitoDA2021",
+                             "temDebitoDA2022")])
+
+setores$IRDA <- 
+  domicilios@data$IRDA |>
+  tapply(domicilios@data$setor, mean, na.rm = TRUE)
+
+bairros$IRDA <- 
+  domicilios@data$IRDA |>
+  tapply(domicilios@data$bairro, mean, na.rm = TRUE)
+
+#IRPG
+# indicadores <- rbind(indicadores,
+#                      c("Índice de recorrência de inscrição em DA","IRDA","numeral","media"))
+# 
+# domicilios$IRDA <-
+#   rowSums(domicilios[,c("temDebitoDA2018",
+#                         "temDebitoDA2019",
+#                         "temDebitoDA2020",
+#                         "temDebitoDA2021",
+#                         "temDebitoDA2022")])
+# 
+# setores$IRDA <- 
+#   domicilios$IRDA |>
+#   tapply(domicilios$setor, mean, na.rm = TRUE)
+# 
+# bairros$IRDA <- 
+#   domicilios$IRDA |>
+#   tapply(domicilios$bairros, mean, na.rm = TRUE)
+
+
+
 # Eliminar valores infinitos
 
 for (i in (1:(setores@data[1,] |> length()))) {

@@ -336,29 +336,24 @@ setores$valorIPTUTeorico <-
   (domicilios[c(pfc_domicilios:tamanho),"NumDomicilios"] |>
   tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE))
 
-setores$
-setores |>
-  ggplot() +
-  geom_point(aes(x = ordemRenda, y = ValorIPTUMedio, color = RendaDomicilioMedia)) +
-  geom_point(aes(x = ordemRenda, y = valorIPTUTeorico), color = "red") +
+g9 <- setores |>
+  ggplot(aes(x = ordemRenda, y = ValorIPTUMedio)) +
+  geom_point() +
+  geom_point(aes(x = ordemRenda, y = valorIPTUTeorico), colour = "red") +
   labs(
-    x = "Setores orde\nnados pela media da divida ativa dos domicilios inadimplentes",
-    y = "Valor da divida ativa",
+    # x = "Setores ordenados pela média da dívida ativa dos domicílios inadimplentes",
+    # y = "Valor da dívida ativa",
     # title = "Distribuição da dívida ativa do IPTU (imóveis residenciais)",
-    color = "Legenda"
+    colour = NULL
   ) +
-  scale_color_manual(values = c("Atual" = "black", "Neutro" = "red"))
-scale_man
-# +
-  # theme_gray() +
-  # scale_x_continuous(
-  #   expand = c(0,0),
-  #   labels = label_number(big.mark = ".", decimal.mark = ",")) +
-  # scale_y_continuous(
-  #   expand = c(0,0),
-  #   labels = label_number(big.mark = ".", decimal.mark = ","))
-# +
-#   theme(aspect.ratio = .5, legend.position = "right") 
+  theme_gray() +
+  scale_x_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  theme(aspect.ratio = .5)
 
 # O resultado em termos de taxa de inadimplência seria assim:
 # valor total do IPTU x Tx de Inadimplência de cada setor

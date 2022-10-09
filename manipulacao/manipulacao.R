@@ -18,3 +18,4 @@ source("manipulacao/indicadores.R")
 # Roda as análises
 # knit("manipulacao/analise1.Rmd", output = "visualizacao/analise1.md")
 render("manipulacao/analise1.Rmd", output_dir = "visualizacao/www")
+render("manipulacao/analise2.Rmd", output_dir = "visualizacao/www")

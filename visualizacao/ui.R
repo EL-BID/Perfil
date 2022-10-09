@@ -200,7 +200,8 @@ ui <- navbarPage(
       actionLink(
         "btn_tabela",
         label = NULL,
-        icon("magnifying-glass-location")
+        icon("id-card-o")
+        # , lib = "glyphicon"
       )
     )
   ),
@@ -211,15 +212,14 @@ ui <- navbarPage(
       src = "/Perfil/analise1.html",
       width = "100%",
       style = "border:none; height: calc(100vh - 50px);")
-    # includeHTML(rmarkdown::render("analise1.Rmd"))
-    # includeMarkdown(knit("analise1.Rmd")) |> div(style = "margin:20px")
-    # includeMarkdown("analise1.md") |> div(style = "margin:20px")
-    
-  ),
+),
   
   tabPanel(
     "Análise 2",
-    # includeMarkdown("analise2.Rmd") |> div(style = "margin:20px")
+    tags$iframe(
+      src = "/Perfil/analise2.html",
+      width = "100%",
+      style = "border:none; height: calc(100vh - 50px);")
   )
 )
 

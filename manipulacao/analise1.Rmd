@@ -445,11 +445,11 @@ g3
     </TD><TD WIDTH = 40% ROWSPAN = 2>
 Ao contrastar com os dados do Censo de 2010 (IBGE), é possível observar que o valor médio cobrado é tanto maior quanto maior for a renda domiciliar média do setor censitário (Gráfico 3). No entanto, o Gráfico 4 nos revela que a taxa efetiva do IPTU - isto é a relação entre o que é efetivamente cobrado no carnê do IPTU e o valor venal do imóvel - é tanto <i>maior</i> quanto <i>menor</i> for a renda domiciliar média. Com isso, é possível afirmar que a cobrança do IPTU em Vitória possui uma estrutura regressiva, de modo a recair mais sobre a população de mais baixa renda.
 
-Determinar os motivos da regressividade do IPTU em Vitória requer uma análise das regras estabelecidas pela municipalidade para a determinação do seu valor. No entanto, uma avaliação preliminar pode ser feita a partir da análise do Gráfico 4, que apresenta o valor efetivo do IPTU para cada imóvel residencial (eixo das ordenadas) em relação ao seu valor venal (eixo das abiscissas).
+Determinar os motivos da regressividade do IPTU em Vitória requer uma análise das regras estabelecidas pela municipalidade para a determinação do seu valor. No entanto, uma avaliação preliminar pode ser feita a partir da análise do Gráfico 5, que apresenta o valor efetivo do IPTU para cada imóvel residencial (eixo das ordenadas) em relação ao seu valor venal (eixo das abiscissas).
 
 Nesse Gráfico, estão destacadas em linhas vermelhas as "faixas" mais comuns de valores cobrados (isto é, valores que foram cobrados em mais de 100 imóveis). As reflexões que esse gráfico sugere são:
 
-* É possível perceber que os valore smais elevados do IPTU são pagos exclusivamente por imóveis cujo valor venal é inferior a R\$ 2 milhões (pontos destacados em vermelho);
+* É possível perceber que os valores mais elevados do IPTU são pagos exclusivamente por imóveis cujo valor venal é inferior a R\$ 2 milhões (pontos destacados em vermelho);
 
 * Há um valor máximo (de R\$ `r Faixas[1] |> round(2) |> format(big.mark = ".", decimal.mark = ",", nsmall = 2)`) além do qual o valor do IPTU não aumento, independente do valor venal do imóvel. 
 
@@ -465,10 +465,11 @@ g4
     </TD>
   </TR><TR>
     <TD COLSPAN = 2 STYLE = "text-align: center;">
+    <center>
 ```{r}
 g5
 ```
-    </TD>
+    </center></TD>
   </TR>
 </TABLE>
 
