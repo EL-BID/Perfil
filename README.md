@@ -1,24 +1,54 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=perfil&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=perfil)
 
 <h1 align="center">Perfil da Dívida Ativa do IPTU</h1>
-<p align="center"><img src="img/screenshot.jpg" alt="Perfil da Dívida Ativa do IPTU" style="border: 1px;></p> 
+<p align="center"><img src="visualizacao/www/screenshot.jpg" alt="Perfil da Dívida Ativa do IPTU" style="border: 1px solid;"></p> 
 
 
 ## Descrição e contexto
 ---
-Perfil da dívida ativa do IPTU é uma ferramenta que permite uma avaliação do atual estoque da dívida ativa do IPTU de um município a partir do perfil dos devedores, construído a partir do cruzamento dos dados da Prefeitura com bases externas. A aplicação foi elaborada como uma prova de conceito de uso de dados disponíveis para resolução de problemas urbanos no âmbito da Cooperação Técnica BR-T1496 - Potencializando o uso de Soluções de Big Data para Cidades Inteligentes.
-
-Para a construção da Prova de Conceito, a base externa escolhida foi a dos dados do Censo de 2010 do IBGE.
-Esto es un archivo README. Debe contener la documentación de soporte uso de la herramienta digital. Las siguientes secciones son las secciones recomendadas que debes poner incluir en cualquier herramienta digital. Puedes descargar este archivo para que te sirva como plantilla.
-
-Asegúrate de empezar este archivo con una breve descripción sobre las funcionalidades y contexto de la herramienta digital. Sé conciso y al grano.
+Perfil da dívida ativa do IPTU é uma ferramenta que permite uma avaliação do atual estoque da dívida ativa do IPTU de um município a partir do perfil dos devedores - construído a partir do cruzamento dos dados da Prefeitura com bases externas. A aplicação foi elaborada como uma prova de conceito de uso de dados disponíveis para resolução de problemas urbanos no âmbito da Cooperação Técnica BR-T1496 - Potencializando o uso de Soluções de Big Data para Cidades Inteligentes.
 
 ## Guia do usuário
 ---
-Ele explica os passos básicos sobre como usar a ferramenta digital. É uma boa seção para mostrar capturas de tela ou gifs que ajudam a entender a ferramenta digital.
- 
+
+A avaliação do perfil da dívida municipal é acessado através de uma interface única intuitiva, a partir da qual cada módulo pode ser acessado.
+
+### Módulo "indicadores"
+
+O módulo "indicadores" permite ao usuário selecionar uma série de indicadores previamente calculados sobre o estoque da dívida e o perfil do contribuinte devedor. A partir da seleção, são exibidas camada sobre o mapa do município contendo a informação escolhida. Todos os dados são apresentados em dois níveis de agregação: setor censitário e bairros. Além da percepção visual do dado, maiores informações são oferecidas ao usuário a partir da seleção de regiões do mapa com cliques do mouse.
+
+### Módulos de análises
+
+Os módulos de análises apresentam estudos feitos a partir dos dados levantados. Esses estudos são relevantes para evidenciar o potencial do uso de dados para sudisidiar a tomada de decisões no processo de formulação de políticas públicas. Atualmente, dois estudos realizados para o município de Vitória-ES estão disponíveis: a avaliação sobre o impacto da regressividade do imposto na estrutura da inadimplência; e o estudo sobre o perfil do inadimplente recorrente.
+
+Novos estudos podem ser criados em documentos R Markdown e facilmente incluidos na aplicação pelo administrador.
+
 ## Guia de instalação
 ---
+
+INTRODUÇÃO
+ESTRUTURA DAS PASTAS DO REPOSITÓRIO
+
+
+CLONAR REPOSITÓRIO
+
+INCLUIR DADOS PRÓPRIOS NA PASTA DADOS
+
+CONFIGURAR DW COM ACESSO VIA ODBC
+
+EXECUTAR O SCRIPT INICIAL
+
+IMPLANTAR AMBIENTE DE VISUALIZAÇÃO EM UM SERVIDOR SHINY.
+
+VIA RSCONECT
+
+VIA SHINYAPPS.IO
+
+VIA SHINY-SERVER
+
+CONFIGURAR FERRAMENTA DE ATUALIZAÇÃO AUTOMÁTICA
+
+
 Passo a passo de como instalar a ferramenta digital. Nesta seção é recomendado explicar a arquitetura de pastas e módulos que compõem o sistema.
 
 Dependendo do tipo de ferramenta digital, o nível de complexidade pode variar. Em algumas ocasiões pode ser necessário instalar componentes dependentes da ferramenta digital. Se este for o caso, adicione a próxima seção também.
