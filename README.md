@@ -1,6 +1,6 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=perfil&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=perfil)
 
-#Perfil da Dívida Ativa do IPTU {style=text-align:center}
+<h1 align="center">Perfil da Dívida Ativa do IPTU</h1>
 <p align="center"><img src="visualizacao/www/screenshot.jpg" alt="Perfil da Dívida Ativa do IPTU" style="border: 1px solid #000000;"></p> 
 
 
@@ -26,44 +26,73 @@ Novos estudos podem ser criados em documentos R Markdown e facilmente incluidos 
 ## Guia de instalação
 ---
 
-A implementação da aplicação requer três passos:
+A implementação da aplicação requer cinco passos:
 
 * Personalização do código;
 * Preparação dos dados;
-* Implantação do ambiente de visualização.
+* Execução inicial;
+* Implantação do ambiente de visualização;
+* Configuração da atualização automática.
 
 ### Personalização do código
 
-O primeiro passo para a personalização do código consiste em clonar o repositório para um ambiente local. 
+Pontos fundamentais:
 
-INCLUIR DADOS PRÓPRIOS NA PASTA DADOS
+- Clonar o repositório;
 
-CONFIGURAR DW COM ACESSO VIA ODBC
+- Alterar o arquivo config.R para se adequar ao ambiente desejado.
 
-EXECUTAR O SCRIPT INICIAL
+Observações adicionais:
 
-IMPLANTAR AMBIENTE DE VISUALIZAÇÃO EM UM SERVIDOR SHINY.
+Para compreender a necessidade de alteração do código, é preciso entender que o mesmo encontra-se dividido em três "fatias" - coleta, manipulação e visualização - cada uma presente em seu próprio diretório.
 
-VIA RSCONECT
+A "coleta" é responsável por obter todos os dados necessários para a aplicação, tanto os provenientes de bases externas quantos os fornecidos pela prefeitura. A necessidade de alteração dos códigos presentes nesta etapa resultam das peculiaridades de acesso aos dados internos quanto da inclusão de novas bases externas.
 
-VIA SHINYAPPS.IO
+Na fatia "manipulação" estão presentes a preparação das variáveis para a adequada exibição, assim como os cálculos de todos os indicadores e análises. Uma vez que seja respeitada a estrutuda dos dados de entrada, modificações só serão necessárias para a inclusão de novos indicadores ou realização de análise personalizadas.
 
-VIA SHINY-SERVER
+A "visualização" consiste no aplicativo em Shiny que permite o acesso do usuário aos dados calculados. O arquivo "ui.R" deve ser modificado para incluir análises personalizadas.
 
-CONFIGURAR FERRAMENTA DE ATUALIZAÇÃO AUTOMÁTICA
+### Preparação dos dados
 
+Os dados fornecidos pela prefeitura devem ser adequados aos requisitos da aplicação. Na pasta "dados" encontram-se os modelos de dados necessários:
 
-Passo a passo de como instalar a ferramenta digital. Nesta seção é recomendado explicar a arquitetura de pastas e módulos que compõem o sistema.
+- modelo_dw.xlsx
+- bairros.kmz
+- imoveis.kmz
 
-Dependendo do tipo de ferramenta digital, o nível de complexidade pode variar. Em algumas ocasiões pode ser necessário instalar componentes dependentes da ferramenta digital. Se este for o caso, adicione a próxima seção também.
+O arquivo modelo_dw.xlsx contém uma pasta do excel onde cada planilha apresenta uma tabela do Datawarehouse da prefeitura. É preciso configurar um acesso ODBC via DSN. O DSN para conexão via ODBC pode ser personalizado no arquivo "config.R". Caso se deseje modificar a forma de acesso a esse conjunto de dados, basta alterar o código do arquivo "coleta/dw_via_odbc.R".
 
-O guia de instalação deve conter especificamente:
-- Os requisitos do sistema operacional para a compilação (versões específicas de bibliotecas, software de gerenciamento de pacotes e dependências, SDKs e compiladores, etc.).
-- As dependências próprias do projeto, tanto externas quanto internas (ordem de compilação dos submódulos, configuração de localização de bibliotecas dinâmicas, etc.).
-- Etapas específicas para a compilação do código fonte e execução de testes unitários caso o projeto os possua.
+Além dos dados do datawarehouse, é preciso fornecer informações as localizações georreferenciadas dos imóveis do município, além das malhas dos bairros da cidade. Exemplos de arquivos com essas informações também estão presentes na pasta "dados" (bairros.kmz e imoveis.kmz - esses nomes podem ser personalizados no arquivo "config.R"). A ausência de informações desse tipo não inviabiliza a aplicação, mas requer algumas modificações:
+
+- Todos os imóveis que não tiverem localização georreferenciada serão localizados a partir dos dados fornecidos pela consulta dos endereços constantes no DW ao serviço do OpenStreetMap. É importante ter em mente que, como há o limite de uma solicitação por segundo, o tempo de demora para a utilização desse serviço é elevado.
+
+- Na inexistência da malha dos bairros, a análise poderá ser realizada exclusivamente pelos setores censitários. O código da aplicação, no entanto, não está preparado para funcionar sem essa malha, requerendo modificação nos módulos de coleta/manipulação/visualizacação.
+
+### Executar o script inicial
+
+Após a personalização do código e preparação dos dados, a aplicação deve ser executada no R uma primeira vez a partir do arquivo "init.R". Esse arquivo irá instalar todas as bibliotecas necessárias e executar as três fatias da aplicação, terminando com a execução da aplicação shiny de visualização.
+
+### Implantar o ambiente de visualização em um servidor
+
+A implantação da aplicação em um servidor pode ser feita de três formas distintas:
+
+- Via shiny-server:
+
+Após a correta configuração do shiny-server, um link deve ser feito dentro de /srv/shiny-server apontando para a pasta "visualizacao". Além disso, é preciso instalar todos os pacotes requeridos.
+
+- Via RStudio connect:
+Não documentado.
+
+- Via shinyapps.io ou serviço similar:
+Não documentado.
+
+### Configurar ferramenta de atualização automática
+
+*Em desenvolvimento
 
 ### Dependências
-Descrição dos recursos externos que geram dependência para a reutilização da ferramenta digital (bibliotecas, frameworks, acesso a bancos de dados e licenças para cada recurso). É uma boa prática descrever as versões mais recentes nas quais a ferramenta digital foi testada.
+
+A aplicação foi desenvolvida para acessar um Datawarehouse hospedado em um MS SQL Server. No entanto, deve funcionar adequadamente em qualquer base de dados que permita acesso via ODBC.
 
 ## Autor
 ---
