@@ -387,18 +387,15 @@ setores[setores$PGsemDoc|>is.na()|>not(),] |>
 setores |>
   ggplot() +
   stat_smooth(data = setores[setores$PGsemDoc|>is.na()|>not(),],
-              aes(y = PGsemDoc, x = IRDA),
-              colour = "blue",
+              aes(y = PGsemDoc, x = IRDA, colour = "blue"),
               se = FALSE, 
               method = 'loess',
               formula = 'y ~ x')+
-  stat_smooth(aes(y = PGcomDoc, x = IRDA),
-              colour = "red", 
+  stat_smooth(aes(y = PGcomDoc, x = IRDA, colour = "red"),
               se = FALSE, 
               method = 'loess', 
               formula = 'y ~ x')+
-  stat_smooth(aes(y = IRPG, x = IRDA), 
-              colour = "green",
+  stat_smooth(aes(y = IRPG, x = IRDA, colour = "green"), 
               se = FALSE, 
               method = 'loess', 
               formula = 'y ~ x')+
@@ -415,18 +412,26 @@ setores |>
   scale_y_continuous(
     expand = c(0,0),
     labels = percent) +
-  theme(aspect.ratio = .5)
+  scale_color_identity(name = "Legenda",
+                          breaks = c("green", "red", "blue"),
+                          labels = c("IRPG Total",
+                                     "IRPG com documento",
+                                     "IRPG sem documento"),
+                          guide = "legend") + 
+  theme(aspect.ratio = .5,
+        legend.position = c(.80,.80),
+        legend.background = element_rect(fill='transparent'))
 ```
     </TD>
   </TR>
 </TABLE>
 
-## O efeito de ter documento é mais significativo nos setores de mais alta renda.
+## O efeito de ter documento é mais significativo nos setores de mais baixa renda.
 
 <TABLE WIDTH = 100%>
   <TR>
     <TD COLSPAN = 2>
-Os Gráficos 8 e 9 mostram o IRPG conforme situação do cadastro do documento. No Gráfico 8 é possível perceber que ter o CPF cadastrado implica em um nível de pagamento mais elevado nos setores de mais alta renda. Isso se dá provavelmente pela falta de capacidade de pagamento da população de mais baixa renda (vide avaliaão sobre regressividade do imposto). Já o Gráfico 9 mostra mais uma vez: por um lado, que um conjunto significativo de setores de alta renda observam pagamentos da dívida mesmo sem documento registrado; por outro lado, a ausência de documento permite que os índices de pagamento caiam ao mesmo patamar dos setores de baixa renda.
+Os Gráficos 8 e 9 mostram o IRPG conforme situação do cadastro do documento nos diversos setores censitários ordenados pelo nível de renda. O Gráfico 8 parecer mostrar que o registro do documento gera um IRPG mais elevado nos setores de mais alta renda (sobretudo os que se encontram acima da 300ª posição). Essa aparência é desfeita com a análise do Gráfico 9 que, além da distribuição do IRPG dos domicílios sem documentos cadastrados, traz também a linha de tendência dos domicílios com documentos cadastrados (do Gráfico 8). A distância entre as duas linhas de tendência é maior para os imóveis abaixo da 300ª posição, indicando que o efeito do cadastro da documentação é mais significativo para os setores com baixo nível de renda domiciliar média.
     </TD>
   </TR><TR>
     <TD WIDTH = 50%>
@@ -434,7 +439,7 @@ Os Gráficos 8 e 9 mostram o IRPG conforme situação do cadastro do documento. 
 setores |>
   ggplot(aes(y = PGcomDoc, x = ordemRenda)) +
   geom_point() +
-  stat_smooth(method = 'loess', formula = 'y ~ x') +
+  stat_smooth(method = 'loess', formula = 'y ~ x', colour = "red") +
   labs(
     x = "Ordem crescente de renda domiciliar mensal média",
     y = "IRPG",
@@ -452,8 +457,6 @@ setores |>
 ```
     </TD><TD WIDTH = 50%>
 ```{r Gráfico 9}
-
-
 setores[setores$PGsemDoc |> is.na() |> not(),] |>
   ggplot(aes(y = PGsemDoc, x = ordemRenda)) +
   geom_point()+
@@ -461,7 +464,6 @@ setores[setores$PGsemDoc |> is.na() |> not(),] |>
     x = "Ordem crescente de renda domiciliar mensal média",
     y = "IRPG",
     title = "Gráfico 9 - Distribuição setores censitários conforme IRPG (apenas domicílios \nsem documentos cadastrados), em ordem crescente de renda média"
-    # colour = "Legenda"
   ) +
   theme_gray() +
   scale_x_continuous(
@@ -470,7 +472,15 @@ setores[setores$PGsemDoc |> is.na() |> not(),] |>
   scale_y_continuous(
     expand = c(0,0),
     labels = percent) +
-  theme(aspect.ratio = .5)
+  stat_smooth(method = 'loess', formula = 'y ~ x',aes(colour = "blue")) +
+  stat_smooth(aes(y = PGcomDoc, x = ordemRenda, colour = "red"),method = 'loess', formula = 'y ~ x') +
+  scale_color_identity(name = "Legenda",
+                          breaks = c("red", "blue"),
+                          labels = c("Com documento", "Sem documento"),
+                          guide = "legend") + 
+  theme(aspect.ratio = .5,
+        legend.position = c(.15,.80),
+        legend.background = element_rect(fill='transparent'))
 ```
     </TD>
   </TR>
