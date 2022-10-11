@@ -10,7 +10,6 @@ imoveis_geo_interno <- readRDS("coleta/dados/imoveis_geo_interno.RDS")
 setores <- readRDS("coleta/dados/setores.RDS")
 bairros <- readRDS("coleta/dados/bairros.RDS")
 
-
 imoveis$long <- NA
 imoveis$lat <- NA
 

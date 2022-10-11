@@ -209,7 +209,7 @@ ui <- navbarPage(
   tabPanel(
     "Análise 1",
     tags$iframe(
-      src = "/Perfil/analise1.html",
+      src = "./analise1.html",
       width = "100%",
       style = "border:none; height: calc(100vh - 50px);")
 ),
@@ -217,7 +217,7 @@ ui <- navbarPage(
   tabPanel(
     "Análise 2",
     tags$iframe(
-      src = "/Perfil/analise2.html",
+      src = "./analise2.html",
       width = "100%",
       style = "border:none; height: calc(100vh - 50px);")
   )

@@ -8,11 +8,7 @@ domicilio_renda_censo2010 <-
   readRDS("coleta/dados/domicilio_renda_censo2010.RDS")
 domicilio_basico_censo2010 <- 
   readRDS("coleta/dados/domicilio_basico_censo2010.RDS")
-
-# IPCA para atualização dos dados do censo
-library(sidrar)
-IPCA <- get_sidra(1737, variable = 2266, period = c("201006", "202208"))
-IPCA <- IPCA$Valor[2]/IPCA$Valor[1]
+IPCA <- readRDS("coleta/dados/IPCA.RDS")
 
 # Cria variáveis com os imóveis residenciais:
 # 3 = residências
@@ -51,8 +47,9 @@ indicadores <- rbind(indicadores,
                  c("Nº de Domicílios (censo)","NumDomiciliosCenso","inteiro","soma"))
 
 setores$NumDomiciliosCenso <- 
-  domicilio_basico_censo2010$v001[
-    match(setores$Name,domicilio_basico_censo2010$id_setor_censitario)]
+  domicilio_basico_censo2010$V001[
+    match(setores$Name,domicilio_basico_censo2010$Cod_setor)] |>
+  as.numeric()
 
 domicilios$NumDomiciliosCensoAtual <-
   setores$NumDomiciliosCenso[match(domicilios$setor, setores$Name)] /
@@ -69,8 +66,9 @@ indicadores <- rbind(indicadores,
 
 setores$RendaDomicilioMedia <- 
   IPCA * 
-  domicilio_renda_censo2010$v002[
-    match(setores$Name, domicilio_renda_censo2010$id_setor_censitario)] /
+  (domicilio_renda_censo2010$V002[
+    match(setores$Name, domicilio_renda_censo2010$Cod_setor)] |>
+  as.numeric()) /
   setores$NumDomiciliosCenso
 
 domicilios$RendaDomicilioMedia <- setores@data$RendaDomicilioMedia[
@@ -85,8 +83,8 @@ indicadores <- rbind(indicadores,
                  c("Renda Total (censo)","RendaTotal","moeda","soma"))
 
 setores$RendaTotal <- 
-  IPCA * domicilio_renda_censo2010$v002[match(setores$Name,
-    domicilio_renda_censo2010$id_setor_censitario)]
+  IPCA * (domicilio_renda_censo2010$V002[match(setores$Name,
+    domicilio_renda_censo2010$Cod_setor)]  |> as.numeric())
 
 bairros$RendaTotal <- 
   bairros$RendaDomicilioMedia *
@@ -310,8 +308,9 @@ indicadores <- rbind(indicadores,
                  c("População (projeção)","PopulacaoProjecao","inteiro","soma"))
 
 domicilios$PopulacaoProjecao <- 
-  domicilio_basico_censo2010$v003[
-    match(domicilios$setor, domicilio_basico_censo2010$id_setor_censitario)]
+  domicilio_basico_censo2010$V003[
+    match(domicilios$setor, domicilio_basico_censo2010$Cod_setor)] |> 
+  as.numeric()
 
 setores$PopulacaoProjecao <- 
   domicilios$PopulacaoProjecao |>

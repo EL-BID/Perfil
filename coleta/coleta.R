@@ -6,14 +6,14 @@ dir.create("coleta/dados", showWarnings = FALSE)
 # dados do Data Warehouse via ODBC
 source("coleta/dw_via_odbc.R")
 
-# malhas dos setores (ibge)
-source("coleta/shapes_setores.R")
+# Dados do IBGE (malha de setores, censo e IPCA)
+source("coleta/ibge.R")
 
-# malha dos bairros (fornecido pela prefeitura)
-source("coleta/shapes_bairros.R")
+# Base dos dados (método alternativo para Censo 2010)
+# source("coleta/basedosdados.R")
 
-# georreferenciamento dos imóveis
-source("coleta/imoveis_geocode.R")
+# Dados fornecidos pela prefeitura
+source("coleta/dados_internos.R")
 
-# dados censitários
-source("coleta/censo_2010.R")
+# openstreetmap (massa de água e georreferenciamento restante)
+source("coleta/openstreetmap.R")

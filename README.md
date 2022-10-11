@@ -57,12 +57,12 @@ A "visualização" consiste no aplicativo em Shiny que permite o acesso do usuá
 Os dados fornecidos pela prefeitura devem ser adequados aos requisitos da aplicação. Na pasta "dados" encontram-se os modelos de dados necessários:
 
 - modelo_dw.xlsx
-- bairros.kmz
-- imoveis.kmz
+- bairros.kml
+- imoveis.kml
 
 O arquivo modelo_dw.xlsx contém uma pasta do excel onde cada planilha apresenta uma tabela do Datawarehouse da prefeitura. É preciso configurar um acesso ODBC via DSN. O DSN para conexão via ODBC pode ser personalizado no arquivo "config.R". Caso se deseje modificar a forma de acesso a esse conjunto de dados, basta alterar o código do arquivo "coleta/dw_via_odbc.R".
 
-Além dos dados do datawarehouse, é preciso fornecer informações as localizações georreferenciadas dos imóveis do município, além das malhas dos bairros da cidade. Exemplos de arquivos com essas informações também estão presentes na pasta "dados" (bairros.kmz e imoveis.kmz - esses nomes podem ser personalizados no arquivo "config.R"). A ausência de informações desse tipo não inviabiliza a aplicação, mas requer algumas modificações:
+Além dos dados do datawarehouse, é preciso fornecer informações as localizações georreferenciadas dos imóveis do município, além das malhas dos bairros da cidade. Exemplos de arquivos com essas informações também estão presentes na pasta "dados" (bairros.kml e imoveis.kml - esses nomes podem ser personalizados no arquivo "config.R"). A ausência de informações desse tipo não inviabiliza a aplicação, mas requer algumas modificações:
 
 - Todos os imóveis que não tiverem localização georreferenciada serão localizados a partir dos dados fornecidos pela consulta dos endereços constantes no DW ao serviço do OpenStreetMap. É importante ter em mente que, como há o limite de uma solicitação por segundo, o tempo de demora para a utilização desse serviço é elevado.
 
@@ -78,7 +78,7 @@ A implantação da aplicação em um servidor pode ser feita de três formas dis
 
 - Via shiny-server:
 
-Após a correta configuração do shiny-server, um link deve ser feito dentro de /srv/shiny-server apontando para a pasta "visualizacao". Além disso, é preciso instalar todos os pacotes requeridos.
+Após a correta configuração do shiny-server, um link deve ser feito dentro de /srv/shiny-server apontando para a pasta "visualizacao" (ou deve ser feita uma cópia). Além disso, é preciso instalar todos os pacotes requeridos (presentes em pacotes.R).
 
 - Via RStudio connect:
 Não documentado.

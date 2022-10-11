@@ -7,16 +7,10 @@
 ####
 
 ## Variáveis de configurações ####
-source("config.R")
+source("config.R", encoding = "UTF-8")
 
-# Verificar e instalar lista de pacotes
-# carregar pacotes
-library(shiny)
-library(rmarkdown)
-library(DBI)
-library(odbc)
-library(dplyr)
-
+## instalando e carregando pacotes requeridos ####
+source("pacotes.R")
 ## Fatias ####
 
 # Coleta
