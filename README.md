@@ -68,9 +68,9 @@ Além dos dados do datawarehouse, é preciso fornecer informações as localiza�
 
 - Na inexistência da malha dos bairros, a análise poderá ser realizada exclusivamente pelos setores censitários. O código da aplicação, no entanto, não está preparado para funcionar sem essa malha, requerendo modificação nos módulos de coleta/manipulação/visualizacação.
 
-### Executar o script inicial
+### Executar o script de carga
 
-Após a personalização do código e preparação dos dados, a aplicação deve ser executada no R uma primeira vez a partir do arquivo "init.R". Esse arquivo irá instalar todas as bibliotecas necessárias e executar as três fatias da aplicação, terminando com a execução da aplicação shiny de visualização.
+Após a personalização do código e preparação dos dados, a aplicação deve ser executada no R uma primeira vez a partir do arquivo "carga.R". Esse arquivo irá instalar todas as bibliotecas necessárias e executar as duas fatias da aplicação, terminando com a atualização da fatia de visualização.
 
 ### Implantar o ambiente de visualização em um servidor
 
@@ -78,7 +78,11 @@ A implantação da aplicação em um servidor pode ser feita de três formas dis
 
 - Via shiny-server:
 
-Após a correta configuração do shiny-server, um link deve ser feito dentro de /srv/shiny-server apontando para a pasta "visualizacao" (ou deve ser feita uma cópia). Além disso, é preciso instalar todos os pacotes requeridos (presentes em pacotes.R).
+Após a correta configuração do shiny-server, um link deve ser feito dentro de /srv/shiny-server apontando para a pasta "visualizacao" da aplicação. O nome do link será utilizado para acessar a aplicação pelo navegador (http://exemplo.com/nome_do_link/). 
+
+Além disso, é preciso instalar todos os pacotes requeridos - executando o seguinte comando no servidor:
+
+`sudo su - c "R -e \"source('<CAMINHO DA APLICAÇÃO>/pacotes.R')\""`
 
 - Via RStudio connect:
 Não documentado.
@@ -88,7 +92,17 @@ Não documentado.
 
 ### Configurar ferramenta de atualização automática
 
-*Em desenvolvimento
+A atualização automática pode ser implementada criando-se um agendamento de tarefa que execute o script de carga pelo R (./carga.R). Os dados são atualizados e a aplicação de visualização no shiny-server é reiniciada em alguns instantes.
+
+Exemplo de código para execução do script no Windows:
+
+```
+cd <CAMINHO DA APLICAÇÃO>
+For /F "Skip=1 Tokens=2*" %%A In (
+    'Reg Query "HKLM\SOFTWARE\R-core\R"^
+    /V "InstallPath"2^>Nul'
+) Do start "" "%%~B\bin\Rscript.exe" "<CAMINHO DA APLICAÇÃO>/carga.R"
+```
 
 ### Dependências
 

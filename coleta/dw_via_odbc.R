@@ -1,10 +1,15 @@
 # Conectar e baixar dados do DW da prefeitura via ODBC
 
+print("Carga de dados do DataWarehouse...")
+
 library(DBI)
 library(odbc)
 library(dplyr)
 
+print("Carga de dados do DataWarehouse... Conectando...")
 con_dw <- dbConnect(odbc(), dsn= dsn_name, encoding = dw_encoding)
+print("Carga de dados do DataWarehouse... Conexão estabelecida... lendo tabelas...")
+
 
 imoveis <- 
   dbReadTable(con_dw, "BI_DadosInscricaoImobiliaria")
@@ -82,3 +87,4 @@ saveRDS(pessoas,
         file = "coleta/dados/pessoas.RDS")
 
 dbDisconnect(con_dw)
+print("Fim da carga de dados do DataWarehouse.")

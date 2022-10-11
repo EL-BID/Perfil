@@ -11,8 +11,8 @@ source("config.R", encoding = "UTF-8")
 
 ## instalando e carregando pacotes requeridos ####
 source("pacotes.R")
-## Fatias ####
 
+## Fatias ####
 # Coleta
 source("coleta/coleta.R")
 
@@ -20,4 +20,5 @@ source("coleta/coleta.R")
 source("manipulacao/manipulacao.R")
 
 # Visualização
-runApp("visualizacao")
+file.create("visualizacao/restart.txt")
+print("Aplicação atualizada...")

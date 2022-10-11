@@ -9,5 +9,5 @@ CIDADE <- "VITÓRIA"
 UF <- "ES"
 
 # Arquivos presentes em /dados:
-arquivo_bairros <- "BairroPopulacaoCenso2010.kml"
-arquivo_unidades <- "UnidadeImobiliaria.kml"
+arquivo_bairros <- "bairros.kml"
+arquivo_unidades <- "imoveis.kml"

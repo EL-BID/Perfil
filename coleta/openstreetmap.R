@@ -1,5 +1,7 @@
 # Dados do OpenStreetMaps
 
+print("Carga de dados do OpenStreetMap...")
+
 library(cartography)
 library(osmdata)
 library(raster)
@@ -8,6 +10,7 @@ library(rgdal)
 library(tidygeocoder)
 
 ## Massas de água ####
+print("Carga de dados do OpenStreetMap... massas de água...")
 agua <- setores |> 
   st_bbox() |>
   opq() |>
@@ -23,6 +26,7 @@ saveRDS(agua,
         "coleta/dados/agua.RDS")
 
 ## consulta as coordenadas dos imóveis para os quais não há informações internas
+print("Carga de dados do OpenStreetMap... geocode dos imóveis...")
 imoveis_geo <- readRDS("coleta/dados/imoveis.RDS")
 imoveis_geo_interno <- readRDS("coleta/dados/imoveis_geo_interno.RDS")
 
@@ -46,3 +50,5 @@ imoveis_geo <- imoveis_geo[,c("inscricaoCadastral", "endereco")] |>
 
 saveRDS(imoveis_geo,
         file = "coleta/dados/imoveis_geo.RDS")
+
+print("Fim da carga de dados do OpenStreetMap.")

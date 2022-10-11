@@ -1,8 +1,11 @@
 ### Carrega informações fornecidas internamente
 
+print("Carga de dados do internos...")
+
 library(rgdal)
 
 ## malhas dos bairros ####
+print("Carga de dados do internos... malha dos bairros...")
 bairros <- readOGR(paste0("dados/",arquivo_bairros))
 
 # extrai dados presente na descrição
@@ -16,6 +19,7 @@ saveRDS(bairros, file =
 
 
 ## georreferenciamento das unidades imobiliárias ####
+print("Carga de dados do internos... unidades imobiliárias...")
 imoveis_geo_interno <- readOGR(paste0("dados/",arquivo_unidades))
 
 # remove duplicados
@@ -43,3 +47,4 @@ imoveis_geo_interno$bairro <-
 saveRDS(imoveis_geo_interno, file = 
           "coleta/dados/imoveis_geo_interno.RDS")
 
+print("Fim da carga de dados do internos.")

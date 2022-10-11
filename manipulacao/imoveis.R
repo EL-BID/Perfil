@@ -1,5 +1,7 @@
 # Cria uma única variável com os dados dos imóveis
 
+print("Tratando dados dos imóveis...")
+
 library(dplyr)
 library(raster)
 library(magrittr)

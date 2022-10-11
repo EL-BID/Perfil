@@ -1,5 +1,7 @@
 # calcula todos os indicadores
 
+print("Calculando indicadores...")
+
 # carrega dados
 bairros <- readRDS("coleta/dados/bairros.RDS")
 setores <- readRDS("manipulacao/dados/setores.RDS")

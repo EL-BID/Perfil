@@ -1,5 +1,7 @@
 # Dados do IBGE
 
+print("Carga de dados do IBGE...")
+
 library(sidrar)
 library(rgdal)
 library(XML)
@@ -7,6 +9,7 @@ library(sf)
 library(raster)
 
 ## baixa a malha de setores de todo o estado ####
+print("Carga de dados do IBGE... malha dos setores censitários...")
 setor_url <- 
   "http://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_kmz/"
 lista <- getHTMLLinks(setor_url)
@@ -40,6 +43,7 @@ saveRDS(setores, file =
           "coleta/dados/setores.RDS")
 
 ## IPCA para atualização dos dados do censo ####
+print("Carga de dados do IBGE... IPCA...")
 IPCA <- get_sidra(1737, variable = 2266, period = c("201006", "202208"))
 IPCA <- IPCA$Valor[2]/IPCA$Valor[1]
 
@@ -47,6 +51,7 @@ saveRDS(IPCA,
         file = "coleta/dados/IPCA.RDS")
 
 ## Baixa dados do censo ####
+print("Carga de dados do IBGE... Censo...")
 censo_url <- 
   "http://ftp.ibge.gov.br/Censos/Censo_Demografico_2010/Resultados_do_Universo/Agregados_por_Setores_Censitarios/"
 lista <- getHTMLLinks(censo_url)
@@ -54,11 +59,12 @@ arquivos <- grep(paste0(UF,"_"), lista)
 if (arquivos |> length() == 1) {
   download.file(
     paste0(censo_url, lista[arquivos]), 
-    "coleta/temp/censo_estado.zip", mode = "wb",
-    encoding = 'latin1')
+    "coleta/temp/censo_estado.zip", mode = "wb")
+  
   unzip("coleta/temp/censo_estado.zip", 
         exdir = "coleta/temp/censo",
-        junkpaths = TRUE)
+        junkpaths = TRUE,
+        unzip = "unzip")
   
 } else {
   # Alguns estados possuem mais de 1 arquivo
@@ -119,3 +125,5 @@ saveRDS(domicilio_basico_censo2010,
 # massa_agua <- crop(massa_agua,bb) # Corta a massa de água 
 # 
 # setores <- erase(setores, massa_agua)
+
+print("Fim da carga de dados do IBGE.")
