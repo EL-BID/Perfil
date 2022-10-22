@@ -24,9 +24,9 @@ pfc_domicilios <- 13
 pfc_setores <- 100000
 
 ### Carrega informações ####
-imoveis <- readRDS("../visualizacao/dados/imoveis.RDS")
-domicilios <- readRDS("../visualizacao/dados/domicilios.RDS")
-setores <- readRDS("../visualizacao/dados/setores.RDS")
+imoveis <- readRDS("../manipulacao/dados/imoveis.RDS")
+domicilios <- readRDS("../manipulacao/dados/domicilios.RDS")
+setores <- readRDS("../manipulacao/dados/setores.RDS")
 
 imoveis <- imoveis@data
 domicilios <- domicilios@data

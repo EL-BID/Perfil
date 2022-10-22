@@ -21,10 +21,12 @@ imoveis[,c("long","lat")] <-
     match(imoveis$inscricaoCadastral,
           imoveis_geo_interno$inscricao),c(1,2)]
 
-imoveis[imoveis$long|>is.na(),c("long","lat")] <-
-  imoveis_geo[
-    match(imoveis$inscricaoCadastral[imoveis$long|>is.na()],
-          imoveis_geo$inscricaoCadastral),c("long","lat")]
+if (imoveis_geo[1,1] |> is.na() |> not()) {
+  imoveis[imoveis$long|>is.na(),c("long","lat")] <-
+    imoveis_geo[
+      match(imoveis$inscricaoCadastral[imoveis$long|>is.na()],
+            imoveis_geo$inscricaoCadastral),c("long","lat")]
+}
 
 # Elimina os imóveis sem georreferenciamento
 imoveis <- imoveis[!is.na(imoveis$long),]
