@@ -100,31 +100,41 @@ g1 <- domicilios[c(pfc_domicilios:tamanho),] |>
 # Setoes ordenados pela dívida
 num_setores <- setores$Name |> length()
 
-setores$DividaTotal <- 
+temp <- 
   domicilios[c(pfc_domicilios:tamanho),"vlDebitoDA"] |>
   tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE)
+setores$DividaTotal <- 
+  temp[match(setores$Name,names(temp))]
 
-setores$Inadimplentes <- 
+temp <- 
   domicilios[c(pfc_domicilios:tamanho),"Inadimplentes"] |>
   tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE)
+setores$Inadimplentes <- 
+  temp[match(setores$Name,names(temp))]
 
 setores$DividaMedia <- 
   setores$DividaTotal /
   setores$Inadimplentes
 
-setores$DAMax <- 
+temp <- 
   domicilios[c(pfc_domicilios:tamanho),"vlDebitoDA"] |>
   tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], max, na.rm = TRUE)
-
-setores$DAMin <- 
+setores$DAMax <- 
+  temp[match(setores$Name,names(temp))]
+  
+temp <- 
   domicilios_inadimplentes$vlDebitoDA |>
   tapply(domicilios_inadimplentes$setor, min, na.rm = TRUE)
+setores$DAMin <- 
+  temp[match(setores$Name,names(temp))]
 
 domicilios$temDoc <- domicilios$cpfCnpjResponsavel |> is.na() |> not()
 
-setores$temDoc <- 
+temp <- 
   domicilios[c(pfc_domicilios:tamanho),"temDoc"] |>
   tapply(domicilios[c(pfc_domicilios:tamanho),"setor"], sum, na.rm = TRUE)
+setores$temDoc <- 
+  temp[match(setores$Name,names(temp))]
 
 setores$temDocP <- 
   setores$temDoc /

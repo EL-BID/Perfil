@@ -91,37 +91,49 @@ setores$ordemRenda <- 1:num_setores
 setores <- setores[order(setores$Name),]
 
 # Percentual de domicílios com documento
-setores$temDocP <- 
+temp <- 
   domicilios$temDoc |>
   tapply(domicilios$setor, mean, na.rm = TRUE)
+setores$temDocP <- 
+  temp[match(setores$Name,names(temp))]
 
 # IRDA do setor
-setores$IRDA <- 
+temp <- 
   domicilios$IRDA |>
   tapply(domicilios$setor, mean, na.rm = TRUE)
+setores$IRDA <- 
+  temp[match(setores$Name,names(temp))]
 
 # IRPG do setor
-setores$IRPG <- 
+temp <- 
   domicilios$IRPG |>
   tapply(domicilios$setor, mean, na.rm = TRUE)
+setores$IRPG <- 
+  temp[match(setores$Name,names(temp))]
 
 # Percentual de pagamentos entre domicílios com documento
-setores$PGcomDoc <- 
+temp <- 
   domicilios$PGcomDoc |>
   tapply(domicilios$setor, mean, na.rm = TRUE)
+setores$PGcomDoc <- 
+  temp[match(setores$Name,names(temp))]
 
 # Percentual de pagamentos entre domicílios sem documento
-setores$PGsemDoc <- 
+temp <- 
   domicilios$PGsemDoc |>
   tapply(domicilios$setor, mean, na.rm = TRUE)
+setores$PGsemDoc <- 
+  temp[match(setores$Name,names(temp))]
 # Alguns setores não possuem pagantes sem doc pq não existem domicílios
 # sem doc que possuem dívida
 setores$PGsemDoc[is.nan(setores$PGsemDoc)] <- NA
 
 # Taxa de pagamento dos munícipes inscritos apenas 1 vez
-setores$TXPGIRDA1 <-
+temp <- 
   domicilios$IRPG[(domicilios$IRDA==1)] |> 
   tapply(domicilios$setor[(domicilios$IRDA==1)], mean, na.rm = TRUE)
+setores$TXPGIRDA1 <-
+  temp[match(setores$Name, names(temp))]
 
 # Dívida ativa de domicílios sem documento por setor
 temp <- 
