@@ -1,4 +1,4 @@
-server <- function(input, output) {
+function(input, output, session) {
   
   # Mapa base ####
   output$map <- renderLeaflet({
@@ -149,8 +149,6 @@ server <- function(input, output) {
                   values = dados_bairros()@data[,1],
                   pal = pal_bairros())
     }
-    # Incluir também: alterações nos dados da tabela
-    # somar tudo para mostrar a cidade, ou mostrar apenas os shapes selecionados
   })
 
   # Ferramentas####
@@ -378,7 +376,7 @@ server <- function(input, output) {
   output$titulo <- renderText(titulo())
   lapply(1:length(indicadores_tabela), function(i) {
     output[[paste0("nome_indicador_",i)]] <- renderText(
-      indicadores[indicadores %in% indicadores_tabela[i]] |> names()
+      indicadores[indicadores$nome %in% indicadores_tabela[i],"rotulo"]
     )
     output[[paste0("indicador_",i)]] <- renderText(
       dados_tabela()[indicadores_tabela[i]] |> 

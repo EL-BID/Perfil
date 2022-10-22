@@ -16,5 +16,4 @@ setores <- crop(setores, bbox(bairros))
 # retira setores que não possuem imoveis
 setores <- setores[setores$Name %in% unique(imoveis$setor),]
 
-saveRDS(setores,
-        file = "manipulacao/dados/setores.RDS")
+setores |> saveRDS("manipulacao/dados/setores_raw.RDS")

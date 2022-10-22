@@ -10,12 +10,8 @@ print("Carga de dados do DataWarehouse... Conectando...")
 con_dw <- dbConnect(odbc(), dsn= dsn_name, encoding = dw_encoding)
 print("Carga de dados do DataWarehouse... Conexão estabelecida... lendo tabelas...")
 
-
 imoveis <- 
   dbReadTable(con_dw, "BI_DadosInscricaoImobiliaria")
-
-pessoas <- 
-  dbReadTable(con_dw, "BI_PessoaImobiliario")
 
 # completa alguns dados
 # essa parte do código precisa ser integrada diretamente no DW e retirada daqui
@@ -80,11 +76,7 @@ imoveis$ocupacao <-
     "Cod_Ocupacao"]
 
 # grava dados
-saveRDS(imoveis,
-        file = "coleta/dados/imoveis.RDS")
-
-saveRDS(pessoas,
-        file = "coleta/dados/pessoas.RDS")
+imoveis |> saveRDS("coleta/dados/imoveis.RDS")
 
 dbDisconnect(con_dw)
 print("Fim da carga de dados do DataWarehouse.")

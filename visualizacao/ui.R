@@ -1,11 +1,11 @@
-ui <- navbarPage(
+navbarPage(
   theme = shinytheme("simplex"),
   collapsible = TRUE,
   windowTitle = "PMV - Perfil da Dívida Ativa (IPTU)",
   title = "Perfil",
-  # selected = "Análise 1",
-  
+
   header = tagList(
+    tags$head(tags$link(rel = "shortcut icon", href = "./favicon.ico")),
     # Painel "carregando.." (para ocultar conteúdo enquanto carrega)
     conditionalPanel(
       "output.carregando != ''",
@@ -20,13 +20,6 @@ ui <- navbarPage(
           z-index: 100000;
         ",
         img(
-          # src = "hug.gif",
-          # height = "50px",
-          # style = "
-          #   position: fixed;
-          #   top: calc(50vh - 25px);
-          #   left: calc(50vw - 25px);
-          # "
           src = "spinner.gif",
           style = "
             position: fixed;
@@ -52,16 +45,28 @@ ui <- navbarPage(
       top = 46,
       left = 10,
       width = 400,
-      draggable = TRUE,
       style = "z-index: 5000;
       font-size: 14px;
       padding: 15px 10px 0px 10px;
       background-color: rgba(0,0,0,0.1);",
+      # selectInput(
+      #   "Indicadores",
+      #   label = NULL,
+      #   width = 400,
+      #   choices = indicadores[,"nome"],
+      #   # options = list(
+      #   #   searchField = "nome",
+      #   #   labelField= "nome",
+      #   #   # optgroupValueField  = "grupo",
+      #   #   valueField = "nome"
+      #   # )
+      # ),
       selectInput(
         "Indicadores",
         label = NULL,
         width = 400,
-        choices = indicadores
+        choices = lista_indicadores,
+        selectize = FALSE
       )
     ),
 

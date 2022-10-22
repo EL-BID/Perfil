@@ -43,5 +43,4 @@ imoveis$bairro <-
 imoveis <- imoveis[imoveis$setor |> is.na() |> not(),]
 imoveis <- imoveis[imoveis$bairro |> is.na() |> not(),]
 
-saveRDS(imoveis, 
-        file = "manipulacao/dados/imoveis.RDS")
+imoveis |> saveRDS("manipulacao/dados/imoveis.RDS")

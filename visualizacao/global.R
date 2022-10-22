@@ -10,14 +10,13 @@ library(stringr)
 library(rgeos)
 
 # Carrega dados
-domicilios <- readRDS("dados/domicilios.RDS")
+domicilios <- readRDS("dados/domicilios_pontos.RDS")
 setores <- readRDS("dados/setores.RDS")
 bairros <- readRDS("dados/bairros.RDS")
-dic_indicadores <- readRDS("dados/indicadores.RDS")
-indicadores <- dic_indicadores$nome
-names(indicadores) <- dic_indicadores$rotulo
+indicadores <- readRDS("dados/indicadores.RDS")
+lista_indicadores <- readRDS("dados/lista_indicadores.RDS")
 
-# indicadores_tabela <- (dic_indicadores$agregado == "soma") |> which()
+# Indicadores presentes na tabela flutuante
 indicadores_tabela <- c(
   "NumDomicilios",
   "RendaDomicilioMedia",
@@ -56,7 +55,7 @@ for (x in 1:length(indicadores_tabela)) {
 }
 
 
-#
+
 paleta <- function(intervalo) {
   # Cria paleta de cores conforme o intervalo dos dados
   # se os dados são negativos e positivos, a paleta é divergente centrada em 0
@@ -95,7 +94,7 @@ formatar <-  function (x, ind = NULL) {
   if (x |> is.na()) {
     x
   } else {
-    tipo <- dic_indicadores$tipo[dic_indicadores$nome == ind]
+    tipo <- indicadores$tipo[indicadores$nome == ind]
     sufixo <- ""
     if (x > 1000000000) {
       x <- x/1000000000
