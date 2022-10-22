@@ -1,5 +1,8 @@
 ## Variáveis de configuração da aplicação
 
+# Executar versão de teste
+teste_ver <- FALSE
+
 # DSN para acesso à base da prefeitura via ODBC
 dsn_name <- "PMVBigData"
 dw_encoding <- "UTF-8"
