@@ -46,7 +46,7 @@ Observações adicionais:
 
 Para compreender a necessidade de alteração do código, é preciso entender que o mesmo encontra-se dividido em três "fatias" - coleta, manipulação e visualização - cada uma presente em seu próprio diretório.
 
-A "coleta" é responsável por obter todos os dados necessários para a aplicação, tanto os provenientes de bases externas quantos os fornecidos pela prefeitura. A necessidade de alteração dos códigos presentes nesta etapa resulta das peculiaridades de acesso aos dados internos quanto da inclusão de novas bases externas.
+A "coleta" é responsável por obter todos os dados necessários para a aplicação, tanto os provenientes de bases externas quantos os fornecidos pela prefeitura. A necessidade de alteração dos códigos presentes nesta etapa resulta tanto das peculiaridades de acesso aos dados internos quanto da inclusão de novas bases externas.
 
 Na fatia "manipulação" estão presentes a preparação das variáveis para a adequada exibição, assim como os cálculos de todos os indicadores e análises. Uma vez que seja respeitada a estrutura dos dados de entrada, modificações só serão necessárias para a inclusão de novos indicadores ou realização de análise personalizadas.
 
@@ -101,7 +101,7 @@ cd <CAMINHO DA APLICAÇÃO>
 For /F "Skip=1 Tokens=2*" %%A In (
     'Reg Query "HKLM\SOFTWARE\R-core\R"^
     /V "InstallPath"2^>Nul'
-) Do start "" "%%~B\bin\Rscript.exe" "<CAMINHO DA APLICAÇÃO>/atualiza.R"
+) Do start "" "%%~B\bin\Rscript.exe" "<CAMINHO DA APLICAÇÃO>/atualizar.R"
 ```
 
 ### Dependências
