@@ -1,4 +1,4 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=perfil&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=perfil)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=EL-BID_Perfil&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=EL-BID_Perfil)
 
 <h1 align="center">Perfil da Dívida Ativa do IPTU</h1>
 <p align="center"><img src="visualizacao/www/screenshot.jpg" alt="Perfil da Dívida Ativa do IPTU" style="border: 1px solid #000000;"></p> 
