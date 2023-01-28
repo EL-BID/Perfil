@@ -139,14 +139,16 @@ function(input, output, session) {
     if ("Setores" %in% input$map_groups) {
       grupo("Setores")
       proxy |>
-          addLegend("bottomright",
+          addLegend("topleft",
                     values = dados_setores()@data[,1],
+                    labFormat = formatar_lab(input$Indicadores),
                     pal = pal_setores())
     } else {
       grupo("Bairros")
       proxy |>
-        addLegend("bottomright",
+        addLegend("topleft",
                   values = dados_bairros()@data[,1],
+                  labFormat = formatar_lab(input$Indicadores),
                   pal = pal_bairros())
     }
   })

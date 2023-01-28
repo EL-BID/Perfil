@@ -1,7 +1,7 @@
 ## Variáveis de configuração da aplicação
 
 # Executar versão de teste
-teste_ver <- FALSE
+teste_ver <- TRUE
 
 # DSN para acesso à base da prefeitura via ODBC
 dsn_name <- "PMVBigData"

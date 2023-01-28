@@ -46,7 +46,7 @@ bairros$NumDomicilios <-
 
 # Número de domicílios (censo)
 indicadores <- rbind(indicadores,
-                 c("Nº de Domicílios (censo)","NumDomiciliosCenso","inteiro","soma","Domicílios e população"))
+                 c("Nº de Domicílios (censo 2010)","NumDomiciliosCenso","inteiro","soma","Domicílios e população"))
 
 setores$NumDomiciliosCenso <- 
   domicilio_basico_censo2010$V001[
@@ -64,7 +64,7 @@ bairros$NumDomiciliosCenso <-
 
 # Renda domiciliar média
 indicadores <- rbind(indicadores,
-                 c("Renda Domiciliar Média (censo)","RendaDomicilioMedia","moeda","media","Renda"))
+                 c("Renda Domiciliar Média (censo 2010)","RendaDomicilioMedia","moeda","media","Renda"))
 
 setores$RendaDomicilioMedia <- 
   IPCA * 
@@ -82,7 +82,7 @@ bairros$RendaDomicilioMedia <-
 
 # Renda total média
 indicadores <- rbind(indicadores,
-                 c("Renda Total (censo)","RendaTotal","moeda","soma","Renda"))
+                 c("Renda Total (censo 2010)","RendaTotal","moeda","soma","Renda"))
 
 setores$RendaTotal <- 
   IPCA * (domicilio_renda_censo2010$V002[match(setores$Name,
@@ -106,7 +106,7 @@ bairros$VariacaoNumDomicilios <- 0
 
 # Número de domicílios criados ou destruídos desde o censo 2010
 indicadores <- rbind(indicadores,
-                 c("Variação absoluta de domicílios (= base - censo)","NovosDomicilios","inteiro","soma","Domicílios e população"))
+                 c("Variação absoluta de domicílios (= base - censo 2010)","NovosDomicilios","inteiro","soma","Domicílios e população"))
 
 setores$NovosDomicilios <-
   setores$NumDomicilios - 

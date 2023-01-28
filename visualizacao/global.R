@@ -15,6 +15,13 @@ setores <- readRDS("dados/setores.RDS")
 bairros <- readRDS("dados/bairros.RDS")
 indicadores <- readRDS("dados/indicadores.RDS")
 lista_indicadores <- readRDS("dados/lista_indicadores.RDS")
+status <- readRDS("dados/status.RDS")
+
+if (status$teste) {
+  footer_height <- 55
+} else {
+  footer_height <- 25
+}
 
 # Indicadores presentes na tabela flutuante
 indicadores_tabela <- c(
@@ -86,7 +93,7 @@ paleta <- function(intervalo) {
   
   colorNumeric(
     cores,
-    domain = dominio, 
+    domain = dominio,
     na.color="transparent")
 }
 
@@ -102,6 +109,9 @@ formatar <-  function (x, ind = NULL) {
     } else if (x > 1000000) {
       x <- x/1000000
       sufixo <- " milhões"
+    } else if (x > 1000) {
+      x <- x/1000
+      sufixo <- " mil"
     }
     x <- round(x, 2)
     if (ind |> is.null() | tipo == "numeral") {
@@ -129,6 +139,22 @@ formatar_lista <- function(z, ind) {
     }
   )
 }
+
+list_f2s <- function(z, ind, type = NULL, lng) {
+  lapply(
+    1:length(z), 
+    function(i, w = z, name = ind){
+      f2s(w[i], name, lang = lng)
+    }
+  )
+}
+
+formatar_lab <- function(ind) {
+  function(type, cuts, ...) {
+    formatar_lista(cuts, ind)
+  }
+}
+
 # definições de estilos:
 # botão de ferramenta
 btn_pressionado <- 

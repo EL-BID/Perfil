@@ -30,6 +30,36 @@ navbarPage(
       )
     )
   ),
+  
+  footer = tagList(
+    absolutePanel(
+      
+      fixed = TRUE,
+      style = "background-color: rgba(255,255,255,0.6);
+            z-index: 100;
+            pointer-events: none;
+            color: black;
+            font-size:20px;
+            font-weight:bold;
+            padding: 0px",
+      bottom = 0,
+      left = 0,
+      width = 370,
+      height = footer_height,
+      
+      div(style = "color:red; padding-left:10px;",
+          if (status$teste) {
+            "* Versão de teste. Dados aleatórios."
+          }
+      ),
+      
+      div(style = "padding-left:10px;",
+          " Última atualização: ",
+          status$atualizacao
+      ),
+      
+    )
+  ),
     
   tabPanel(
     "Indicadores",
@@ -37,6 +67,8 @@ navbarPage(
     tags$style(type = "text/css", ".container-fluid {padding-left:0px;padding-right:0px;}"),
     tags$style(type = "text/css", ".navbar {margin-bottom: 0px;}"),
     tags$style(type = "text/css", ".container-fluid .navbar-header .navbar-brand {margin-left: 0px;}"),
+    tags$style(".leaflet-control-container .leaflet-top.leaflet-left {position: absolute; left: 420px;}"),
+    
     leafletOutput("map", width = "100%", height = "calc(100vh - 41px)"),
 
     # Painel de controle
@@ -49,18 +81,6 @@ navbarPage(
       font-size: 14px;
       padding: 15px 10px 0px 10px;
       background-color: rgba(0,0,0,0.1);",
-      # selectInput(
-      #   "Indicadores",
-      #   label = NULL,
-      #   width = 400,
-      #   choices = indicadores[,"nome"],
-      #   # options = list(
-      #   #   searchField = "nome",
-      #   #   labelField= "nome",
-      #   #   # optgroupValueField  = "grupo",
-      #   #   valueField = "nome"
-      #   # )
-      # ),
       selectInput(
         "Indicadores",
         label = NULL,
@@ -75,7 +95,6 @@ navbarPage(
       "output.mostrar_tabela != -1",
       absolutePanel(
         width = 400,
-        # height = 200,
         top = 125,
         left = 10,
         draggable = TRUE,
@@ -112,7 +131,12 @@ navbarPage(
                     color: black;
                   ",
                 icon = icon("times", verify_fa = FALSE)
-              ) |> absolutePanel(top = 0, right = 5)
+              ) |> absolutePanel(top = 0, right = 5),
+              if (status$teste) {
+                div(style = "color:red; padding-left:10px;",
+                    "* Versão de teste. Dados aleatórios."
+                )
+              }
             )
           ),
           tags$tr(tags$td(colspan = 2,
@@ -205,26 +229,26 @@ navbarPage(
       actionLink(
         "btn_tabela",
         label = NULL,
-        icon("id-card-o")
+        icon("id-card")
         # , lib = "glyphicon"
       )
     )
-  ),
-
-  tabPanel(
-    "Análise 1",
-    tags$iframe(
-      src = "./analise1.html",
-      width = "100%",
-      style = "border:none; height: calc(100vh - 50px);")
-),
-  
-  tabPanel(
-    "Análise 2",
-    tags$iframe(
-      src = "./analise2.html",
-      width = "100%",
-      style = "border:none; height: calc(100vh - 50px);")
+#   ),
+# 
+#   tabPanel(
+#     "Análise 1",
+#     tags$iframe(
+#       src = "./analise1.html",
+#       width = "100%",
+#       style = "border:none; height: calc(100vh - 50px);")
+# ),
+# 
+#   tabPanel(
+#     "Análise 2",
+#     tags$iframe(
+#       src = "./analise2.html",
+#       width = "100%",
+#       style = "border:none; height: calc(100vh - 50px);")
   )
 )
 

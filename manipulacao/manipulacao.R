@@ -15,6 +15,6 @@ source("manipulacao/setores.R")
 source("manipulacao/indicadores.R")
 
 # Roda as análises
-print("Preparando análises...")
-render("manipulacao/analise1.Rmd", output_dir = "visualizacao/www")
-render("manipulacao/analise2.Rmd", output_dir = "visualizacao/www")
+# print("Preparando análises...")
+# render("manipulacao/analise1.Rmd", output_dir = "visualizacao/www")
+# render("manipulacao/analise2.Rmd", output_dir = "visualizacao/www")
