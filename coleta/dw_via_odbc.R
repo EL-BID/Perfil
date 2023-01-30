@@ -33,18 +33,6 @@ temp_tipos_logradouro <-
     schema = "dbo", 
     table = "tipo_logradouro"))
 
-temp_unidades_imobiliarias <- 
-  dbReadTable(con_dw, Id(
-    database = "bdpmv", 
-    schema = "dbo", 
-    table = "Unidades_Imobiliarias"))
-
-temp_ocupacao <- 
-  dbReadTable(con_dw, Id(
-    database = "bdpmv", 
-    schema = "dbo", 
-    table = "Ocupacoes"))
-
 # retira os espaços vazios de cod_logradouro
 temp_logradouro$Tipo_Logradouro <- sub(" ","",temp_logradouro$Tipo_Logradouro)
 temp_logradouro$Tipo_Logradouro <- sub(" ","",temp_logradouro$Tipo_Logradouro)
@@ -69,11 +57,6 @@ imoveis$tipoLogradouro <-
   temp_inscricoes[
     match(imoveis$inscricaoCadastral,temp_inscricoes$Inscricao_Cadastral),
     "tipo_logradouro"]
-
-imoveis$ocupacao <- 
-  temp_unidades_imobiliarias[
-    match(imoveis$inscricaoCadastral,temp_unidades_imobiliarias$Inscricao_Cadastral),
-    "Cod_Ocupacao"]
 
 # grava dados
 imoveis |> saveRDS("coleta/dados/imoveis.RDS")

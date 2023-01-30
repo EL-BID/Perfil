@@ -16,8 +16,10 @@ imoveis <- readRDS("manipulacao/dados/imoveis.RDS")
 # 3 = residências
 # 11 = garagens residenciais
 # 13 = lazer residenciar
-domicilios <- imoveis |> subset(ocupacao %in% c(3))
-imoveis_residenciais <- imoveis |> subset(ocupacao %in% c(3,11,13))
+domicilios <- imoveis |> subset(ocupacao %in% "Residencial")
+imoveis_residenciais <- imoveis |> subset(ocupacao %in% c("Residencial",
+                                                          "Vg Residencial",
+                                                          "Lazer Residencial"))
 
 # retira setores e bairros que não possuem imoveis residenciais
 setores <- setores |> subset(setores$Name %in% unique(domicilios$setor))
