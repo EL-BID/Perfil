@@ -33,7 +33,6 @@ navbarPage(
   
   footer = tagList(
     absolutePanel(
-      
       fixed = TRUE,
       style = "background-color: rgba(255,255,255,0.6);
             z-index: 100;
@@ -46,18 +45,15 @@ navbarPage(
       left = 0,
       width = 370,
       height = footer_height,
-      
       div(style = "color:red; padding-left:10px;",
           if (status$teste) {
             "* Versão de teste. Dados aleatórios."
           }
       ),
-      
       div(style = "padding-left:10px;",
           " Última atualização: ",
           status$atualizacao
       ),
-      
     )
   ),
     

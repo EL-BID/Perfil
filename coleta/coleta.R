@@ -13,9 +13,6 @@ if (teste_ver) {
 # Dados do IBGE (malha de setores, censo e IPCA)
 source("coleta/ibge.R")
 
-# Base dos dados (método alternativo para Censo 2010)
-# source("coleta/basedosdados.R")
-
 # Dados fornecidos pela prefeitura
 source("coleta/dados_internos.R")
 
